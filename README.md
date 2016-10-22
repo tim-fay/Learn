@@ -1,2 +1,2 @@
 # Education
-A repo created specifically for Akvelon education purposes...
+A repo for personal education purposes.
