@@ -1,17 +1,33 @@
+using System;
 using System.Threading.Tasks;
 using GrainInterfaces;
 using Orleans;
 
 namespace Grains
 {
-    /// <summary>
-    /// Grain implementation class Grain1.
-    /// </summary>
     public class UserGrain : Grain, IUser
     {
+        private DateTime LastHeartbeatMessageTime { get; set; }
+
+        public Task Heartbeat()
+        {
+            LastHeartbeatMessageTime = DateTime.UtcNow;
+            return Task.CompletedTask;
+        }
+
         public Task<bool> IsOnline()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(IsAlive());
         }
+
+        private bool IsAlive()
+        {
+            return DateTime.UtcNow - LastHeartbeatMessageTime < Defaults.HeartbeatDelay;
+        }
+    }
+
+    public static class Defaults
+    {
+        public static readonly TimeSpan HeartbeatDelay = TimeSpan.FromSeconds(5);
     }
 }

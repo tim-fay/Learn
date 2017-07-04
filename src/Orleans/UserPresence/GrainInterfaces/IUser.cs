@@ -5,6 +5,7 @@ namespace GrainInterfaces
 {
     public interface IUser : IGrainWithGuidKey
     {
+        Task Heartbeat();
         Task<bool> IsOnline();
     }
 }
