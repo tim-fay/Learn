@@ -1,11 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Owin.Builder;
+using Owin;
+
 
 namespace WebFrontEnd
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -34,6 +42,34 @@ namespace WebFrontEnd
             loggerFactory.AddDebug();
 
             app.UseMvc();
+            app.UseSignalR();
+        }
+    }
+
+
+    public static class AppBuilderExtensions
+    {
+        public static IApplicationBuilder UseAppBuilder(this IApplicationBuilder app, Action<IAppBuilder> configure)
+        {
+            app.UseOwin(addToPipeline =>
+            {
+                addToPipeline(next =>
+                {
+                    var appBuilder = new AppBuilder();
+                    appBuilder.Properties["builder.DefaultApp"] = next;
+
+                    configure(appBuilder);
+
+                    return appBuilder.Build<AppFunc>();
+                });
+            });
+
+            return app;
+        }
+
+        public static void UseSignalR(this IApplicationBuilder app)
+        {
+            app.UseAppBuilder(appBuilder => appBuilder.MapSignalR());
         }
     }
 }
