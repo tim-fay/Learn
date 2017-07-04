@@ -4,11 +4,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform>AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AD6779D7-5442-409A-8286-B9B04E677436}</ProjectGuid>
+    <ProjectGuid>{C42DAD49-926D-45F7-92AB-E0B84079EF0F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GrainInterfaces</RootNamespace>
-    <AssemblyName>GrainInterfaces</AssemblyName>
+    <RootNamespace>Grains</RootNamespace>
+    <AssemblyName>Grains</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -141,8 +141,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IUser.cs" />
+    <Compile Include="UserGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GrainInterfaces\GrainInterfaces.csproj">
+      <Project>{ad6779d7-5442-409a-8286-b9b04e677436}</Project>
+      <Name>GrainInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
