@@ -1,5 +1,5 @@
 using System;
-
+using GrainInterfaces;
 using Orleans;
 using Orleans.Runtime.Configuration;
 using Orleans.Runtime.Host;
@@ -31,6 +31,9 @@ namespace SelfHostSiloAndClient
             //
             // This is the place for your test code.
             //
+            var helloWorld = client.GetGrain<IHelloWorld>(Guid.Empty);
+            Console.WriteLine(helloWorld.SayHello("Bill Gates").Result);
+
 
             Console.WriteLine("\nPress Enter to terminate...");
             Console.ReadLine();
