@@ -15,13 +15,13 @@ namespace GrainsCollection
         {
             if (!_state.HasValue)
             {
-                _state = await DoCalculations();
+                _state = await DoCalculationsAsync();
             }
 
             return _state.Value;
         }
 
-        private async Task<BigInteger> DoCalculations()
+        private async Task<BigInteger> DoCalculationsAsync()
         {
             long calculatedNumberIndex = this.GetPrimaryKeyLong();
             GetLogger().Info($"Doing calculations for {calculatedNumberIndex}");
@@ -29,7 +29,7 @@ namespace GrainsCollection
             // Check for basic indexes
             if (calculatedNumberIndex == 1 || calculatedNumberIndex == 2)
             {
-                GetLogger().Info("Index equals 1|2, skipping main calculatios");
+                GetLogger().Info("Index equals 1|2, skipping main calculations");
                 return BigInteger.One;
             }
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using GrainInterfaces;
 using Orleans;
+using Orleans.Runtime;
 using Orleans.Runtime.Configuration;
 using Orleans.Runtime.Host;
 
@@ -17,6 +18,7 @@ namespace SelfHostSiloAndClient
         {
             // First, configure and start a local silo
             var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
+            siloConfig.Defaults.DefaultTraceLevel = Severity.Error;
             var silo = new SiloHost("TestSilo", siloConfig);
             silo.InitializeOrleansSilo();
             silo.StartOrleansSilo();
@@ -25,6 +27,7 @@ namespace SelfHostSiloAndClient
 
             // Then configure and connect a client.
             var clientConfig = ClientConfiguration.LocalhostSilo();
+            //clientConfig.DefaultTraceLevel = Severity.Error;
             var client = new ClientBuilder().UseConfiguration(clientConfig).Build();
             client.Connect().Wait();
 
@@ -55,16 +58,14 @@ namespace SelfHostSiloAndClient
 
             var fibonacciClient = new FibonacciClient(clusterClient);
 
-            var num10 = await fibonacciClient.GetNumber(10);
-            Console.WriteLine($"Number of index 10 is: {num10}");
-            var num100 = await fibonacciClient.GetNumber(20);
-            Console.WriteLine($"Number of index 100 is: {num100}");
-            var num1000 = await fibonacciClient.GetNumber(1000);
-            Console.WriteLine($"Number of index 1000 is: {num1000}");
-            //clusterClient.Logger.
+            await fibonacciClient.CalcNumber(10);
+            await fibonacciClient.CalcNumber(20);
+            await fibonacciClient.CalcNumber(1000);
+            await fibonacciClient.CalcNumber(1001);
+            await fibonacciClient.CalcNumber(1002);
 
             stopWatch.Stop();
-            Console.WriteLine($"Fibonacci calculations ended... Time taken: {stopWatch.ElapsedMilliseconds}");
+            Console.WriteLine($"Fibonacci calculations ended... Overall time taken: {stopWatch.ElapsedMilliseconds}");
         }
 
     }
@@ -78,11 +79,15 @@ namespace SelfHostSiloAndClient
             Client = client;
         }
 
-        public async Task<string> GetNumber(long index)
+        public async Task CalcNumber(long index)
         {
+            Console.Write($"Calculating Number of index: {index}...   ");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             IFibonacciNumber fibonacciNumber = Client.GetGrain<IFibonacciNumber>(index);
             var number = await fibonacciNumber.CalculateNumber();
-            return number.ToString();
+            stopwatch.Stop();
+            Console.WriteLine($"Number of index 100 is: {number}, Calculation time (ms) taken: {stopwatch.ElapsedMilliseconds}");
         }
     }
 }
