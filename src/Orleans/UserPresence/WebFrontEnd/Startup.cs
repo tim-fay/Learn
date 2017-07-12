@@ -42,7 +42,10 @@ namespace WebFrontEnd
             loggerFactory.AddDebug();
 
             app.UseMvc();
-            app.UseSignalR();
+            
+            // This is connection point of SignalR using OWIN
+            // We'll remove this approach for now, using just REST for signaling user presence
+            //app.UseSignalR();
         }
     }
 
