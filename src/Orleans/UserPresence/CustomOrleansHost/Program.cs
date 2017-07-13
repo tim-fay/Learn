@@ -7,9 +7,9 @@ namespace CustomOrleansHost
     /// <summary>
     /// Orleans test silo host
     /// </summary>
-    public class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             // First, configure and start a local silo
             var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
