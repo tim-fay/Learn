@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grains", "Grains\Grains.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomOrleansHost", "CustomOrleansHost\CustomOrleansHost.csproj", "{D9466819-1DC6-45E2-8E55-DF7AC4437DCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestClient", "ConsoleTestClient\ConsoleTestClient.csproj", "{37163F15-4008-408F-8538-C887DDA0074D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D9466819-1DC6-45E2-8E55-DF7AC4437DCA} = {D9466819-1DC6-45E2-8E55-DF7AC4437DCA}
+		{A00272D6-2F4C-4DE4-B1DC-35DB3591ED95} = {A00272D6-2F4C-4DE4-B1DC-35DB3591ED95}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +39,10 @@ Global
 		{D9466819-1DC6-45E2-8E55-DF7AC4437DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9466819-1DC6-45E2-8E55-DF7AC4437DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9466819-1DC6-45E2-8E55-DF7AC4437DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37163F15-4008-408F-8538-C887DDA0074D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37163F15-4008-408F-8538-C887DDA0074D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37163F15-4008-408F-8538-C887DDA0074D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37163F15-4008-408F-8538-C887DDA0074D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
