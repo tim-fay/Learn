@@ -3,7 +3,7 @@ using Orleans;
 
 namespace GrainInterfaces
 {
-    public interface IUser : IGrainWithGuidKey
+    public interface IUser : IGrainWithIntegerKey
     {
         Task Heartbeat();
         Task<bool> IsOnline();
