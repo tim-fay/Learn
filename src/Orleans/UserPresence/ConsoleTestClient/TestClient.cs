@@ -10,21 +10,22 @@ namespace ConsoleTestClient
         private readonly TimeSpan _waitDelay = TimeSpan.FromSeconds(2);
 
         private HttpClient HttpClient { get; }
-        private long ClientId { get; }
+        public long ClientId { get; }
 
         public TestClient(long clientId)
         {
             ClientId = clientId;
             HttpClient = new HttpClient();
-            //httpClient.BaseAddress = 
         }
 
         public async Task Run(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var response = await HttpClient.GetAsync($"http://localhost:54739/api/heartbeat?id={ClientId}");
-                await Task.Delay(_waitDelay);
+                //var response = await HttpClient.GetAsync($"http://localhost:54739/api/heartbeat/{ClientId}");
+                var response = await HttpClient.GetAsync($"http://localhost:5000/api/heartbeat/{ClientId}");
+                Console.WriteLine($"Heartbeat message sent from Client ID: {ClientId}, Response: {response.StatusCode}");
+                await Task.Delay(_waitDelay, cancellationToken);
             }
 
         }

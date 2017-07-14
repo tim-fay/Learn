@@ -11,11 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grains", "Grains\Grains.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomOrleansHost", "CustomOrleansHost\CustomOrleansHost.csproj", "{D9466819-1DC6-45E2-8E55-DF7AC4437DCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestClient", "ConsoleTestClient\ConsoleTestClient.csproj", "{37163F15-4008-408F-8538-C887DDA0074D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D9466819-1DC6-45E2-8E55-DF7AC4437DCA} = {D9466819-1DC6-45E2-8E55-DF7AC4437DCA}
-		{A00272D6-2F4C-4DE4-B1DC-35DB3591ED95} = {A00272D6-2F4C-4DE4-B1DC-35DB3591ED95}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTestClient", "ConsoleTestClient\ConsoleTestClient.csproj", "{37163F15-4008-408F-8538-C887DDA0074D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

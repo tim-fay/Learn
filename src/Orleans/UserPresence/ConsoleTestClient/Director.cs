@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace ConsoleTestClient
 
             foreach (var client in TestClients)
             {
+                Console.WriteLine($"Running client, Id: {client.ClientId}");
                 promises.Add(client.Run(cancellationToken));
             }
 

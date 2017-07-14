@@ -8,7 +8,7 @@ namespace ConsoleTestClient
         private static void Main()
         {
             Console.WriteLine("Press any key to start a test run...");
-            Console.Read();
+            Console.ReadLine();
 
             Console.WriteLine("Starting a conductor...");
 
@@ -24,10 +24,6 @@ namespace ConsoleTestClient
             Console.ReadLine();
 
             cancellationTokenSource.Cancel();
-
-            promise.Wait();
-
-            //Console.ReadLine();
         }
     }
 }

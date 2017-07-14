@@ -38,8 +38,21 @@ namespace WebFrontEnd
             services.AddMvc();
 
             ClientConfiguration clientConfig = ClientConfiguration.LocalhostSilo();
-            IClusterClient client = new ClientBuilder().UseConfiguration(clientConfig).Build();
-            client.Connect().Wait();
+            IClusterClient client = null; // = new ClientBuilder().UseConfiguration(clientConfig).Build();
+            bool isInitialized = false;
+            while (!isInitialized)
+            {
+                try
+                {
+                    client = new ClientBuilder().UseConfiguration(clientConfig).Build();
+                    client.Connect().Wait();
+                    isInitialized = client.IsInitialized;
+                }
+                catch (Exception e)
+                {
+                    client?.Dispose();
+                }
+            }
 
             services.AddSingleton(client);
         }
