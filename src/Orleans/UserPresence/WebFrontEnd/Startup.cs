@@ -67,34 +67,34 @@ namespace WebFrontEnd
 
             // This is connection point of SignalR using OWIN
             // We'll remove this approach for now, using just REST for signaling user presence
-            //app.UseSignalR();
+            app.UseSignalR();
         }
     }
 
 
-    //public static class AppBuilderExtensions
-    //{
-    //    public static IApplicationBuilder UseAppBuilder(this IApplicationBuilder app, Action<IAppBuilder> configure)
-    //    {
-    //        app.UseOwin(addToPipeline =>
-    //        {
-    //            addToPipeline(next =>
-    //            {
-    //                var appBuilder = new AppBuilder();
-    //                appBuilder.Properties["builder.DefaultApp"] = next;
+    public static class AppBuilderExtensions
+    {
+        public static IApplicationBuilder UseAppBuilder(this IApplicationBuilder app, Action<IAppBuilder> configure)
+        {
+            app.UseOwin(addToPipeline =>
+            {
+                addToPipeline(next =>
+                {
+                    var appBuilder = new AppBuilder();
+                    appBuilder.Properties["builder.DefaultApp"] = next;
 
-    //                configure(appBuilder);
+                    configure(appBuilder);
 
-    //                return appBuilder.Build<AppFunc>();
-    //            });
-    //        });
+                    return appBuilder.Build<AppFunc>();
+                });
+            });
 
-    //        return app;
-    //    }
+            return app;
+        }
 
-    //    public static void UseSignalR(this IApplicationBuilder app)
-    //    {
-    //        app.UseAppBuilder(appBuilder => appBuilder.MapSignalR());
-    //    }
-    //}
+        public static void UseSignalR(this IApplicationBuilder app)
+        {
+            app.UseAppBuilder(appBuilder => appBuilder.MapSignalR());
+        }
+    }
 }
