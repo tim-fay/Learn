@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Xunit;
 
 namespace UniLecs
 {
+    [Collection("UniLecs")]
     public class Task1SingleInstanceInString
     {
         [Theory]
-        [InlineData("abcdefg ")]
-        [InlineData(" ")]
-        public void NoDuplicateItem(string input)
+        [Trait("Task 1", "Test 1")]
+        [InlineData("abcdefg ", true)]
+        [InlineData(" ", true)]
+        [InlineData("abcafg", false)]
+        [InlineData(" Try   ", false)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
+        public void CheckForUniqueItems(string input, bool expected)
         {
-            Assert.True(CheckIfUniqueItemsOnly(input));
-        }
-
-        [Theory]
-        [InlineData("abcafg")]
-        [InlineData(" Try   ")]
-        [InlineData("")]
-        public void NoUniqueItems(string input)
-        {
-            Assert.False(CheckIfUniqueItemsOnly(input));
+            Assert.Equal(expected, CheckIfUniqueItemsOnly(input));
         }
 
         private bool CheckIfUniqueItemsOnly(string input)
