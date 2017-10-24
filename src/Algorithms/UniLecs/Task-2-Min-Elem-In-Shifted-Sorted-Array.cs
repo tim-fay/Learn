@@ -40,16 +40,11 @@ namespace UniLecs
             if (array == null) throw new ArgumentNullException(nameof(array));
             if (array.Length == 0) throw new ArgumentException();
 
-            if (array.Length == 1)
-            {
-                return array[0];
-            }
-
             int start = 0;
             int end = array.Length - 1;
 
             // Check if array sorted without shift
-            if (array[start] < array[end])
+            if (array.Length == 1 || array[start] < array[end])
             {
                 return array[start];
             }
