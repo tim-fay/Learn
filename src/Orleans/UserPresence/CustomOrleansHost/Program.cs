@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
+using Grains;
+using Orleans.Hosting;
 using Orleans.Runtime.Configuration;
-using Orleans.Runtime.Host;
 
 namespace CustomOrleansHost
 {
@@ -9,33 +11,28 @@ namespace CustomOrleansHost
     /// </summary>
     internal static class Program
     {
-        private static void Main()
+        private static async Task Main()
         {
             // First, configure and start a local silo
-            var siloConfig = ClusterConfiguration.LocalhostPrimarySilo();
-            var silo = new SiloHost("TestSilo", siloConfig);
-            silo.InitializeOrleansSilo();
-            silo.StartOrleansSilo();
+            ClusterConfiguration clusterConfiguration = ClusterConfiguration.LocalhostPrimarySilo();
+            clusterConfiguration.AddMemoryStorageProvider();
+            
+            ISiloHost siloHost = new SiloHostBuilder()
+                .UseConfiguration(clusterConfiguration)
+                .AddApplicationPartsFromReferences(typeof(UserGrain).Assembly)
+                .Build();
 
+            
+            await siloHost.StartAsync();
             Console.WriteLine("Silo started.");
 
-            // Then configure and connect a client.
-            //var clientConfig = ClientConfiguration.LocalhostSilo();
-            //var client = new ClientBuilder().UseConfiguration(clientConfig).Build();
-            //client.Connect().Wait();
-
-            //Console.WriteLine("Client connected.");
-
-            //
-            // This is the place for your test code.
-            //
 
             Console.WriteLine("\nPress Enter to terminate...");
             Console.ReadLine();
 
             // Shut down
             //client.Close();
-            silo.ShutdownOrleansSilo();
+            await siloHost.StopAsync();
         }
     }
 }

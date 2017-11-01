@@ -7,15 +7,15 @@ namespace ConsoleTestClient
 {
     public class TestClient
     {
+        private HttpClient HttpClient { get; }
         private readonly TimeSpan _waitDelay = TimeSpan.FromSeconds(2);
 
-        private HttpClient HttpClient { get; }
         public long ClientId { get; }
 
-        public TestClient(long clientId)
+        public TestClient(HttpClient httpClient, long clientId)
         {
+            HttpClient = httpClient;
             ClientId = clientId;
-            HttpClient = new HttpClient();
         }
 
         public async Task Run(CancellationToken cancellationToken)
