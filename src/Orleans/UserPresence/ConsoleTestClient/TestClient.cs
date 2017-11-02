@@ -14,7 +14,8 @@ namespace ConsoleTestClient
 
         public TestClient(HttpClient httpClient, long clientId)
         {
-            HttpClient = httpClient;
+            //HttpClient = httpClient;
+            HttpClient = new HttpClient();
             ClientId = clientId;
         }
 

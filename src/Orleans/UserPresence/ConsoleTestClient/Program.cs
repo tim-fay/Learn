@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 
 namespace ConsoleTestClient
@@ -7,6 +8,10 @@ namespace ConsoleTestClient
     {
         private static void Main()
         {
+            //ServicePointManager.UseNagleAlgorithm = true;
+            //ServicePointManager.Expect100Continue = true;
+            //ServicePointManager.CheckCertificateRevocationList = true;
+            ServicePointManager.DefaultConnectionLimit = 1_000;
             Console.WriteLine("Press any key to start a test run...");
             Console.ReadLine();
 

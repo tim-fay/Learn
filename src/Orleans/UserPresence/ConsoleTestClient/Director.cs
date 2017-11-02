@@ -8,7 +8,8 @@ namespace ConsoleTestClient
 {
     public class TestConductor
     {
-        private const int MaxClientsCount = 10_000;
+        //private const int MaxClientsCount = 1_000;
+        private const int MaxClientsCount = 500;
 
         //private List<TestClient> TestClients { get; }
 
