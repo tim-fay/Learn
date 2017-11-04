@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Algorithms101.RedTeam
@@ -8,10 +9,8 @@ namespace Algorithms101.RedTeam
     public class Task1FindSecondMaxNumberFromList
     {
         private const int DefaultShift = 1;
-        private const int FormerSufficientMaxElementsCount = DefaultShift * 2 + 1;
         private const int Min = 5;
         private const int Max = 10_000;
-
 
         [Fact]
         [Trait("Task 1", "Test input arguments")]
@@ -19,8 +18,8 @@ namespace Algorithms101.RedTeam
         {
             Assert.Throws<ArgumentNullException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(null, DefaultShift));
             Assert.Throws<ArgumentException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(Array.Empty<int>(), DefaultShift));
-            Assert.Throws<ArgumentException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(new int[3], DefaultShift));
-            Assert.Throws<ArgumentException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(new int[10_001], DefaultShift));
+            Assert.Throws<ArgumentException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(new int[Min - 1], DefaultShift));
+            Assert.Throws<ArgumentException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(new int[Max + 1], DefaultShift));
         }
 
         public static IEnumerable<object[]> TestInputArray1() => new TheoryData<int[], int, int> { { new[] { 1, 2, 3, 4, 5 }, DefaultShift, 3 } };
@@ -43,33 +42,24 @@ namespace Algorithms101.RedTeam
             if (numbers == null) throw new ArgumentNullException(nameof(numbers));
             if (numbers.Length < Min || numbers.Length > Max) throw new ArgumentException("Provided array should have values ranging from 5 to 10,000 items", nameof(numbers));
 
-            int formerSufficientMaxElementsCount = shift * 2 + 1;
             int maxIndex = 0;
-            Queue<int> formerMaxIndices = new Queue<int>(formerSufficientMaxElementsCount);
 
-            // Looking for max values, collecting all former max values that are sufficient
+            // Search for the max element
             for (int index = 1; index < numbers.Length; index++)
             {
                 if (numbers[index] > numbers[maxIndex])
                 {
-                    if (formerMaxIndices.Count == formerSufficientMaxElementsCount)
-                    {
-                        formerMaxIndices.Dequeue();
-                    }
-                    formerMaxIndices.Enqueue(maxIndex);
                     maxIndex = index;
                 }
             }
 
-            while (formerMaxIndices.TryDequeue(out int formerMaxIndex))
-            {
-                if (Math.Abs(maxIndex - formerMaxIndex) > shift)
-                {
-                    return numbers[formerMaxIndex];
-                }
-            }
+            // Take sub-arrays around top max element honoring shift value around
+            var first = numbers.Take(maxIndex - shift);
+            var second = numbers.Skip(maxIndex + 1 + shift);
+            // Find max inside combined collection
+            var result = first.Concat(second).Max();
 
-            return 0;
+            return result;
         }
     }
 }
