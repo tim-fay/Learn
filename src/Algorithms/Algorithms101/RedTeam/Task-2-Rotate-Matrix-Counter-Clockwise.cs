@@ -74,20 +74,44 @@ namespace Algorithms101.RedTeam
         {
             CheckInput(input, rotate);
 
-            return RotateImpl(0, 0, input.GetLength(0), input.GetLength(1), input, rotate);
+            return RotateSingle(0, 0, input.GetLength(0), input.GetLength(1), input, rotate);
         }
 
-        private int[,] RotateImpl(int x, int y, int rows, int columns, int[,] input, int rotate)
+        private int[,] RotateSingle(int x, int y, int rows, int columns, int[,] input, int rotate)
         {
-            int fullRotation = (rows + columns - 2) * 2;
-            int rotation = rotate % fullRotation;
+            int fullCircleSteps = (rows + columns - 2) * 2;
+            int rotationSteps = rotate % fullCircleSteps;
 
-            if (rotation == 0)
+            if (rotationSteps == 0)
             {
                 return input;
             }
 
+            var rotateDirection = RotateDirection.Down;
 
+            for (int step = 0; step < rotationSteps; step++)
+            {
+                var stepsToComplete = rotationSteps;
+                int row = x, column = y;
+
+                while (stepsToComplete > 0)
+                {
+                    switch (rotateDirection)
+                    {
+                        case RotateDirection.Down:
+
+                            break;
+                        case RotateDirection.Right:
+                            break;
+                        case RotateDirection.Up:
+                            break;
+                        case RotateDirection.Left:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
 
             return input;
         }
@@ -107,6 +131,14 @@ namespace Algorithms101.RedTeam
             {
                 throw new ArgumentOutOfRangeException(nameof(rotate));
             }
+        }
+
+        private enum RotateDirection
+        {
+            Down,
+            Right,
+            Up,
+            Left
         }
     }
 }
