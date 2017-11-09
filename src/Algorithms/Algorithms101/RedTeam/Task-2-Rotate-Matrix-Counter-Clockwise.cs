@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Algorithms101.RedTeam
 {
+    [Trait("Category", "Red Team")]
     public class Task2RotateMatrixCounterClockwise
     {
         private const int MinLength = 2;
@@ -12,7 +13,6 @@ namespace Algorithms101.RedTeam
         private const int MaxRotateSteps = 1_000_000_000;
 
         [Fact]
-        [Trait("Category", "Red Team")]
         public void InputParametersTest()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => Rotate(new int[MinLength - 1,MinLength], MinRotateSteps));
@@ -62,7 +62,6 @@ namespace Algorithms101.RedTeam
         };
 
         [Theory]
-        [Trait("Category", "Red Team")]
         [MemberData(nameof(TestInputArray1))]
         [MemberData(nameof(TestInputArray2))]
         public void RegularInputTest(int[,] input, int rotate, int[,] expected)
