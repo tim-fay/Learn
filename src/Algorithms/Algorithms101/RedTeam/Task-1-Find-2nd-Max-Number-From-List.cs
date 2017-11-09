@@ -5,7 +5,6 @@ using Xunit;
 
 namespace Algorithms101.RedTeam
 {
-    [Collection("Red Team")]
     public class Task1FindSecondMaxNumberFromList
     {
         private const int DefaultShift = 1;
@@ -13,7 +12,7 @@ namespace Algorithms101.RedTeam
         private const int Max = 10_000;
 
         [Fact]
-        [Trait("Red Team: Task 1", "Test input arguments")]
+        [Trait("Category", "Red Team")]
         public void CheckInputParameters()
         {
             Assert.Throws<ArgumentNullException>(() => FindSecondMaxNumberThatIsNotCloserToMaxValueThanThreePositions(null, DefaultShift));
@@ -27,7 +26,7 @@ namespace Algorithms101.RedTeam
         public static IEnumerable<object[]> TestInputArray3() => new TheoryData<int[], int, int> { { new[] { 1, 3, 5, 7, 9, 8, 6, 4, 2 }, DefaultShift, 6 } };
 
         [Theory]
-        [Trait("Red Team: Task 1", "Test on regular arrays")]
+        [Trait("Category", "Red Team")]
         [MemberData(nameof(TestInputArray1))]
         [MemberData(nameof(TestInputArray2))]
         [MemberData(nameof(TestInputArray3))]

@@ -7,6 +7,7 @@ namespace Algorithms101
     public class ThreeNumbersSumInArrayEqualsZero
     {
         [Fact]
+        [Trait("Category", "Interview")]
         public void OneCombinationShouldBeFound()
         {
             var array = new[] { 1, 2, 3, 4, -3 };
@@ -16,6 +17,7 @@ namespace Algorithms101
         }
 
         [Fact]
+        [Trait("Category", "Interview")]
         public void NoCombinationFound()
         {
             var array = new[] { 1, 2, 3, 4, 5 };

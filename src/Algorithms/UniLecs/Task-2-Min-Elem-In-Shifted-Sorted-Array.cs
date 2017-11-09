@@ -4,11 +4,10 @@ using Xunit;
 
 namespace UniLecs
 {
-    [Collection("UniLecs")]
     public class Task2MinElemInShiftedSortedArray
     {
         [Fact]
-        [Trait("Task 2", "Test input arguments")]
+        [Trait("Category", "UniLecs")]
         public void CheckCornerCaseArguments()
         {
             Assert.Throws<ArgumentNullException>(() => FindMinElementInShiftedSortedArray(null));
@@ -23,7 +22,7 @@ namespace UniLecs
         public static IEnumerable<object[]> TestInputArray6() => new TheoryData<int[], int> { { new[] { 3, 4, 5, 6, 7, 8, 9, 10, 2 }, 2 } };
 
         [Theory]
-        [Trait("Task 2", "Test on regular array")]
+        [Trait("Category", "UniLecs")]
         [MemberData(nameof(TestInputArray1))]
         [MemberData(nameof(TestInputArray2))]
         [MemberData(nameof(TestInputArray3))]
