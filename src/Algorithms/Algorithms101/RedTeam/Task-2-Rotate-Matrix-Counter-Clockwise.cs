@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Algorithms101.RedTeam
@@ -78,27 +79,38 @@ namespace Algorithms101.RedTeam
 
         private int[,] RotateSingle(int x, int y, int rows, int columns, int[,] input, int rotate)
         {
-            int fullCircleSteps = (rows + columns - 2) * 2;
-            int rotationSteps = rotate % fullCircleSteps;
+            int totalItemsCountToRotate = (rows + columns - 2) * 2;
+            int rotationLength = rotate % totalItemsCountToRotate;
 
-            if (rotationSteps == 0)
+            if (rotationLength == 0)
             {
                 return input;
             }
-
+            
             var rotateDirection = RotateDirection.Down;
 
-            for (int step = 0; step < rotationSteps; step++)
+            for (int rotationStep = 0; rotationStep < rotationLength; rotationStep++)
             {
-                var stepsToComplete = rotationSteps;
+                var stepsToComplete = rotationLength;
                 int row = x, column = y;
+                int tempValue;
 
                 while (stepsToComplete > 0)
                 {
                     switch (rotateDirection)
                     {
                         case RotateDirection.Down:
+                            if (stepsToComplete <= rows)
+                            {
+                                tempValue = input[row + stepsToComplete, column];
+                                input[row + stepsToComplete, column] = input[row, column];
 
+                            }
+                            else
+                            {
+                                stepsToComplete = stepsToComplete - rows;
+                                rotateDirection = RotateDirection.Right;
+                            }
                             break;
                         case RotateDirection.Right:
                             break;
@@ -109,6 +121,7 @@ namespace Algorithms101.RedTeam
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+                    stepsToComplete--;
                 }
             }
 
