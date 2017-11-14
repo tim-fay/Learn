@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace Algorithms101.RedTeam
@@ -151,6 +150,31 @@ namespace Algorithms101.RedTeam
             Right,
             Up,
             Left
+        }
+
+        private struct SpecialTwoDimensionalArraySpan<T>
+        {
+            private readonly T[,] _array;
+            private readonly int _row;
+            private readonly int _column;
+            private readonly int _rowsCount;
+            private readonly int _columnsCount;
+
+            public SpecialTwoDimensionalArraySpan(T[,] array, int row, int column, int rowsCount, int columnsCount)
+            {
+                _array = array;
+                _row = row;
+                _column = column;
+                _rowsCount = rowsCount;
+                _columnsCount = columnsCount;
+            }
+
+            public T this[int index]
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public int Length => _rowsCount + _columnsCount - 2;
         }
     }
 }
