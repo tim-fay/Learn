@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace Algorithms101.RedTeam
@@ -152,29 +153,91 @@ namespace Algorithms101.RedTeam
             Left
         }
 
-        private struct SpecialTwoDimensionalArraySpan<T>
+        private struct TwoDimensionalArrayOuterFrameSpan<T>
         {
             private readonly T[,] _array;
             private readonly int _row;
             private readonly int _column;
             private readonly int _rowsCount;
             private readonly int _columnsCount;
+            private readonly int _leftItemsCount;
+            private readonly int _leftBottomItemsCount;
+            private readonly int _leftBottomRightItemsCount;
 
-            public SpecialTwoDimensionalArraySpan(T[,] array, int row, int column, int rowsCount, int columnsCount)
+            public TwoDimensionalArrayOuterFrameSpan(T[,] array, int row, int column, int rowsCount, int columnsCount)
             {
-                _array = array;
+                _array = array ?? throw new ArgumentNullException(nameof(array));
                 _row = row;
                 _column = column;
                 _rowsCount = rowsCount;
                 _columnsCount = columnsCount;
+
+                _leftItemsCount = _rowsCount - 1;
+                _leftBottomItemsCount = _leftItemsCount + _columnsCount - 1;
+                _leftBottomRightItemsCount = _leftBottomItemsCount + _rowsCount - 1;
             }
 
-            public T this[int index]
+            /// <summary>
+            /// Returns a reference 
+            /// </summary>
+            /// <param name="index">A zero based index of the array.</param>
+            /// <returns></returns>
+            public ref T this[int index]
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    if (index < _leftItemsCount)
+                    {
+                        return ref GetLeftSideValue(index);
+                    }
+
+                    int indexRemainder = index - _leftItemsCount;
+                    if (index < _leftBottomItemsCount)
+                    {
+                        return ref GetBottomSideValue(indexRemainder);
+                    }
+
+                    indexRemainder = index - _leftBottomItemsCount;
+                    if (index < _leftBottomRightItemsCount)
+                    {
+                        return ref GetRightSideValue(indexRemainder);
+                    }
+
+                    indexRemainder = index - _leftBottomRightItemsCount;
+                    if (index < _leftBottomRightItemsCount)
+                    {
+                        return ref GetTopSideValue(indexRemainder);
+                    }
+
+                    throw new InvalidOperationException();
+                }
             }
 
             public int Length => _rowsCount + _columnsCount - 2;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetLeftSideValue(int index)
+            {
+                return ref _array[index + _row, _column];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetBottomSideValue(int index)
+            {
+                return ref _array[_row + _rowsCount - 1, _column + index];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetRightSideValue(int index)
+            {
+                return ref _array[_row + _rowsCount - 1 - index, _column + _columnsCount - 1];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetTopSideValue(int index)
+            {
+                return ref _array[_row, _column + _columnsCount - 1 - index];
+            }
         }
     }
 }
