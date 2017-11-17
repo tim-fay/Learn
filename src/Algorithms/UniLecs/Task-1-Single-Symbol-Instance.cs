@@ -3,11 +3,10 @@ using Xunit;
 
 namespace UniLecs
 {
-    [Collection("UniLecs")]
+    [Trait("Category", "UniLecs")]
     public class Task1SingleInstanceInString
     {
         [Theory]
-        [Trait("Task 1", "Test 1")]
         [InlineData("abcdefg ", true)]
         [InlineData(" ", true)]
         [InlineData("abcafg", false)]

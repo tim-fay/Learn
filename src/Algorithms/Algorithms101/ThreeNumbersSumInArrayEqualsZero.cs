@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Algorithms101
 {
+    [Trait("Category", "Interview")]
     public class ThreeNumbersSumInArrayEqualsZero
     {
         [Fact]
