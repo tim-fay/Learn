@@ -131,9 +131,9 @@ namespace Algorithms101.RedTeam
         private static void CheckInput(int[,] input, int rotate)
         {
             if (input.Rank != 2
-                || input.GetLength(0) < MinLength
+                || Math.Min(input.GetLength(0), input.GetLength(1)) < MinLength
+                || Math.Min(input.GetLength(0), input.GetLength(1)) % 2 != 0
                 || input.GetLength(0) > MaxLength
-                || input.GetLength(1) < MinLength
                 || input.GetLength(1) > MaxLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(input));
