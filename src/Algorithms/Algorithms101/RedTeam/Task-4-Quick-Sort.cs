@@ -13,13 +13,15 @@ namespace Algorithms101.RedTeam
         public static IEnumerable<object[]> TestInputArray3() => new TheoryData<int[]> { new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 } };
         public static IEnumerable<object[]> TestInputArray4() => new TheoryData<int[]> { new[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 } };
         public static IEnumerable<object[]> TestInputArray5() => new TheoryData<int[]> { new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+        public static IEnumerable<object[]> TestInputArray6() => new TheoryData<int[]> { new[] { 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 } };
 
         [Theory]
         [MemberData(nameof(TestInputArray1))]
         [MemberData(nameof(TestInputArray2))]
         [MemberData(nameof(TestInputArray3))]
-        //[MemberData(nameof(TestInputArray4))]
-        //[MemberData(nameof(TestInputArray5))]
+        [MemberData(nameof(TestInputArray4))]
+        [MemberData(nameof(TestInputArray5))]
+        [MemberData(nameof(TestInputArray6))]
         public void SortTest(int[] input)
         {
             var expected = input.ToArray();
@@ -49,21 +51,21 @@ namespace Algorithms101.RedTeam
         {
             T pivotValue = array[start];
 
-            int left = start;
-            int right = end;
+            int left = start - 1;
+            int right = end + 1;
 
             while (true)
             {
 
-                while (array[left].CompareTo(pivotValue) < 0)
+                do
                 {
                     left++;
-                }
+                } while (array[left].CompareTo(pivotValue) < 0);
 
-                while (array[right].CompareTo(pivotValue) > 0)
+                do
                 {
                     right--;
-                }
+                } while (array[right].CompareTo(pivotValue) > 0);
 
                 if (left < right)
                 {
