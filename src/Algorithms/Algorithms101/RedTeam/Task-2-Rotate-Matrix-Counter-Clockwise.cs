@@ -80,8 +80,8 @@ namespace Algorithms101.RedTeam
         };
 
         [Theory]
-        [MemberData(nameof(TestInputArray1))]
-        //[MemberData(nameof(TestInputArray2))]
+        //[MemberData(nameof(TestInputArray1))]
+        [MemberData(nameof(TestInputArray2))]
         public void RegularInputTest(int[,] input, int rotate, int[,] expected)
         {
             Assert.Equal(expected, Rotate(input, rotate));
@@ -91,38 +91,67 @@ namespace Algorithms101.RedTeam
         {
             CheckInput(input, rotate);
 
-            return RotateSingle(input, 0, 0, input.GetLength(0), input.GetLength(1), rotate);
+            var minBoundary = Math.Min(input.GetLength(0), input.GetLength(1));
+            var numberOfFrames = minBoundary / 2;
+
+            for (int frame = 0; frame < numberOfFrames; frame++)
+            {
+                RotateSingleFrame(input, frame, frame, input.GetUpperBound(0) + 1 - frame, input.GetUpperBound(1) + 1 - frame, rotate);
+            }
+            RotateSingleFrame(input, 0, 0, input.GetLength(0), input.GetLength(1), rotate);
+            return input;
         }
 
-        private int[,] RotateSingle(int[,] array, int x, int y, int rows, int columns, int rotate)
+        private void RotateSingleFrame(int[,] array, int x, int y, int rows, int columns, int rotate)
         {
             int totalItemsCountToRotate = (rows + columns - 2) * 2;
             int rotationLength = rotate % totalItemsCountToRotate;
 
             if (rotationLength == 0)
             {
-                return array;
+                return;
             }
             
             var span = new TwoDimensionalArrayOuterFrameSpan<int>(array, x, y, rows, columns);
+            int[] buffer = new int[rotationLength];
 
-            int nextValue;
-            int currentValue = span[0];
-            int currentIndex = 0;
-            int nextIndex = 0;
-            //ref int val;
-
-            for (int i = 0; i < totalItemsCountToRotate; i++)
+            for (int i = 0; i < rotationLength; i++)
             {
-                nextIndex = (currentIndex + rotate) % totalItemsCountToRotate;
-                ref int refToNextItem = ref span[nextIndex];
-                nextValue = refToNextItem;
-                refToNextItem = currentValue;
-                currentIndex = nextIndex;
-                currentValue = nextValue;
+                buffer[i] = span[i];
             }
 
-            return array;
+            for (int i = rotationLength; i < span.Length; i++)
+            {
+                ref int item = ref span[i];
+                item = span[i - rotationLength];
+            }
+
+            int j = 0;
+            for (int i = span.Length - rotationLength; i < span.Length; i++)
+            {
+                ref int item = ref span[i];
+                item = buffer[j];
+                j++;
+            }
+
+
+            //int nextValue;
+            //int currentValue = span[0];
+            //int currentIndex = 0;
+            //int nextIndex = 0;
+            ////ref int val;
+
+
+
+            //for (int i = 0; i < totalItemsCountToRotate; i++)
+            //{
+            //    nextIndex = (currentIndex + rotate) % totalItemsCountToRotate;
+            //    ref int refToNextItem = ref span[nextIndex];
+            //    nextValue = refToNextItem;
+            //    refToNextItem = currentValue;
+            //    currentIndex = nextIndex;
+            //    currentValue = nextValue;
+            //}
         }
 
         private static void CheckInput(int[,] input, int rotate)
