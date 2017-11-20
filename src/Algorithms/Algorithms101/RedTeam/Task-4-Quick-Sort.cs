@@ -14,6 +14,7 @@ namespace Algorithms101.RedTeam
         public static IEnumerable<object[]> TestInputArray4() => new TheoryData<int[]> { new[] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 } };
         public static IEnumerable<object[]> TestInputArray5() => new TheoryData<int[]> { new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
         public static IEnumerable<object[]> TestInputArray6() => new TheoryData<int[]> { new[] { 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 } };
+        public static IEnumerable<object[]> TestInputArray7() => new TheoryData<int[]> { new[] { 9, 3, 4, 5, 6, 5, 5, 7, 8, 1, 2, 0 } };
 
         [Theory]
         [MemberData(nameof(TestInputArray1))]
@@ -22,6 +23,7 @@ namespace Algorithms101.RedTeam
         [MemberData(nameof(TestInputArray4))]
         [MemberData(nameof(TestInputArray5))]
         [MemberData(nameof(TestInputArray6))]
+        [MemberData(nameof(TestInputArray7))]
         public void SortTest(int[] input)
         {
             var expected = input.ToArray();
