@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Xunit;
 
@@ -32,13 +33,30 @@ namespace Algorithms101.RedTeam
                 { 1, 2, 3, 4 },
                 { 5, 6, 7, 8 },
                 { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
+                { 13, 14, 15, 16 },
+                { 17, 18, 19, 20 }
             };
 
-            var span = new TwoDimensionalArrayOuterFrameSpan<int>(array, 0, 0, 4, 4);
+            var span = new TwoDimensionalArrayOuterFrameSpan<int>(array, 0, 0, 5, 4);
 
+            // Upper left corner
+            Assert.Equal(array[1, 0], span[13]);
             Assert.Equal(array[0, 0], span[0]);
-            Assert.Equal(array[0, 1], span[11]);
+            Assert.Equal(array[0, 1], span[1]);
+            // Upper right corner
+            Assert.Equal(array[0, 2], span[2]);
+            Assert.Equal(array[0, 3], span[3]);
+            Assert.Equal(array[1, 3], span[4]);
+            // Bottom right corner
+            Assert.Equal(array[3, 3], span[6]);
+            Assert.Equal(array[4, 3], span[7]);
+            Assert.Equal(array[4, 2], span[8]);
+
+            Assert.Equal(array[4, 1], span[9]);
+            Assert.Equal(array[4, 0], span[10]);
+            Assert.Equal(array[3, 0], span[11]);
+
+
         }
 
         public static IEnumerable<object[]> TestInputArray1() => new TheoryData<int[,], int, int[,]>
@@ -79,9 +97,33 @@ namespace Algorithms101.RedTeam
             }
         };
 
+        public static IEnumerable<object[]> TestInputArray3() => new TheoryData<int[,], int, int[,]>
+        {
+            {
+                new[,]
+                {
+                    { 1, 2, 3, 4 },
+                    { 7, 8, 9, 10 },
+                    { 13, 14, 15, 16 },
+                    { 19, 20, 21, 22 },
+                    { 25, 26, 27, 28 }
+                },
+                7,
+                new[,]
+                {
+                    { 28, 27, 26, 25 },
+                    { 22, 9, 15, 19 },
+                    { 16, 8, 21, 13 },
+                    { 10, 14, 20, 7 },
+                    { 4, 3, 2, 1 }
+                }
+            }
+        };
+
         [Theory]
         //[MemberData(nameof(TestInputArray1))]
-        [MemberData(nameof(TestInputArray2))]
+        //[MemberData(nameof(TestInputArray2))]
+        [MemberData(nameof(TestInputArray3))]
         public void RegularInputTest(int[,] input, int rotate, int[,] expected)
         {
             Assert.Equal(expected, Rotate(input, rotate));
@@ -96,9 +138,10 @@ namespace Algorithms101.RedTeam
 
             for (int frame = 0; frame < numberOfFrames; frame++)
             {
-                RotateSingleFrame(input, frame, frame, input.GetUpperBound(0) + 1 - frame, input.GetUpperBound(1) + 1 - frame, rotate);
+                int rows = Math.Max(input.GetUpperBound(0) + 1 - frame * 2, MinLength);
+                int columns = Math.Max(input.GetUpperBound(1) + 1 - frame * 2, MinLength);
+                RotateSingleFrame(input, frame, frame, rows, columns, rotate);
             }
-            RotateSingleFrame(input, 0, 0, input.GetLength(0), input.GetLength(1), rotate);
             return input;
         }
 
@@ -120,38 +163,18 @@ namespace Algorithms101.RedTeam
                 buffer[i] = span[i];
             }
 
-            for (int i = rotationLength; i < span.Length; i++)
+            for (int i = 0; i < span.Length - rotationLength; i++)
             {
                 ref int item = ref span[i];
-                item = span[i - rotationLength];
+                item = span[i + rotationLength];
             }
 
-            int j = 0;
-            for (int i = span.Length - rotationLength; i < span.Length; i++)
+            int lastShiftedIndex = span.Length - rotationLength; 
+            for (int i = 0; i < rotationLength; i++)
             {
-                ref int item = ref span[i];
-                item = buffer[j];
-                j++;
+                ref int item = ref span[lastShiftedIndex + i];
+                item = buffer[i];
             }
-
-
-            //int nextValue;
-            //int currentValue = span[0];
-            //int currentIndex = 0;
-            //int nextIndex = 0;
-            ////ref int val;
-
-
-
-            //for (int i = 0; i < totalItemsCountToRotate; i++)
-            //{
-            //    nextIndex = (currentIndex + rotate) % totalItemsCountToRotate;
-            //    ref int refToNextItem = ref span[nextIndex];
-            //    nextValue = refToNextItem;
-            //    refToNextItem = currentValue;
-            //    currentIndex = nextIndex;
-            //    currentValue = nextValue;
-            //}
         }
 
         private static void CheckInput(int[,] input, int rotate)
@@ -176,12 +199,11 @@ namespace Algorithms101.RedTeam
             private readonly T[,] _array;
             private readonly int _row;
             private readonly int _column;
-            private readonly int _rowsCount;
-            private readonly int _columnsCount;
-            private readonly int _leftItemsCount;
-            private readonly int _leftBottomItemsCount;
-            private readonly int _leftBottomRightItemsCount;
-            private readonly int _leftBottomRightTopItemsCount;
+            private readonly int _verticalItemsCount;
+            private readonly int _horizontalItemsCount;
+            private readonly int _horizontalAndVerticalItemsCount;
+            private readonly int _bothHorizontalAndVerticalItemsCount;
+            private readonly int _allItemsCount;
 
 
             public TwoDimensionalArrayOuterFrameSpan(T[,] array, int row, int column, int rowsCount, int columnsCount)
@@ -189,75 +211,75 @@ namespace Algorithms101.RedTeam
                 _array = array ?? throw new ArgumentNullException(nameof(array));
                 _row = row;
                 _column = column;
-                _rowsCount = rowsCount;
-                _columnsCount = columnsCount;
 
-                _leftItemsCount = _rowsCount - 1;
-                _leftBottomItemsCount = _leftItemsCount + _columnsCount - 1;
-                _leftBottomRightItemsCount = _leftBottomItemsCount + _rowsCount - 1;
-                _leftBottomRightTopItemsCount = _leftBottomRightItemsCount + _columnsCount - 1;
+                _verticalItemsCount = rowsCount - 1;
+                _horizontalItemsCount = columnsCount - 1;
+                _horizontalAndVerticalItemsCount = _horizontalItemsCount + _verticalItemsCount;
+                _bothHorizontalAndVerticalItemsCount = _horizontalItemsCount * 2 + _verticalItemsCount;
+                _allItemsCount = _horizontalAndVerticalItemsCount * 2;
             }
 
+            public int Length => _allItemsCount;
+
             /// <summary>
-            /// Returns a reference 
+            /// Returns a reference to an element from the frame of a matrix
             /// </summary>
             /// <param name="index">A zero based index of the array.</param>
             /// <returns></returns>
-            public ref T this[int index]
+            public ref T this[int index] => ref GetClockwiseElementAt(index);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetClockwiseElementAt(int index)
             {
-                get
+                if (index < _horizontalItemsCount)
                 {
-                    if (index < _leftItemsCount)
-                    {
-                        return ref GetLeftSideValue(index);
-                    }
-
-                    int indexRemainder = index - _leftItemsCount;
-                    if (index < _leftBottomItemsCount)
-                    {
-                        return ref GetBottomSideValue(indexRemainder);
-                    }
-
-                    indexRemainder = index - _leftBottomItemsCount;
-                    if (index < _leftBottomRightItemsCount)
-                    {
-                        return ref GetRightSideValue(indexRemainder);
-                    }
-
-                    indexRemainder = index - _leftBottomRightItemsCount;
-                    if (index < _leftBottomRightTopItemsCount)
-                    {
-                        return ref GetTopSideValue(indexRemainder);
-                    }
-
-                    throw new InvalidOperationException();
+                    return ref GetTopSideValue(index);
                 }
-            }
 
-            public int Length => _leftBottomRightTopItemsCount;
+                if (index < _horizontalAndVerticalItemsCount)
+                {
+                    return ref GetRightSideValue(index - _horizontalItemsCount);
+                }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private ref T GetLeftSideValue(int index)
-            {
-                return ref _array[index + _row, _column];
-            }
+                if (index < _bothHorizontalAndVerticalItemsCount)
+                {
+                    return ref GetBottomSideValue(index - _horizontalAndVerticalItemsCount);
+                }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private ref T GetBottomSideValue(int index)
-            {
-                return ref _array[_row + _rowsCount - 1, _column + index];
-            }
+                if (index < _allItemsCount)
+                {
+                    return ref GetLeftSideValue(index - _bothHorizontalAndVerticalItemsCount);
+                }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private ref T GetRightSideValue(int index)
-            {
-                return ref _array[_row + _rowsCount - 1 - index, _column + _columnsCount - 1];
+                throw new InvalidOperationException();
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private ref T GetTopSideValue(int index)
             {
-                return ref _array[_row, _column + _columnsCount - 1 - index];
+                Debug.Assert(index <= _horizontalItemsCount);
+                return ref _array[_row, _column + index];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetRightSideValue(int index)
+            {
+                Debug.Assert(index <= _verticalItemsCount);
+                return ref _array[_row + index, _column + _horizontalItemsCount];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetBottomSideValue(int index)
+            {
+                Debug.Assert(index <= _horizontalItemsCount);
+                return ref _array[_row + _verticalItemsCount, _column + _horizontalItemsCount - index];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private ref T GetLeftSideValue(int index)
+            {
+                Debug.Assert(index <= _verticalItemsCount);
+                return ref _array[_row + _verticalItemsCount - index, _column];
             }
         }
     }
