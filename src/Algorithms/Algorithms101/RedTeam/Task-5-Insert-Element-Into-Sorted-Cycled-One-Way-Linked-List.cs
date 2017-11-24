@@ -25,8 +25,11 @@ namespace Algorithms101.RedTeam
 
         [Theory]
         [InlineData(new[] { 1, 2, 3, 4, 6, 7, 8 }, 5, new[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        [InlineData(new[] { 2, 3, 4, 5, 6, 7, 8 }, 1, new[] { 2, 3, 4, 5, 6, 7, 8, 1 })]
+        [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7 }, 8, new[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
         public void TestMultipleNodeList(int[] inputItems, int insertedValue, int[] expected)
         {
+            // Build a Linked List
             var root = new Node<int>(inputItems[0]);
             var previousNode = root;
 
@@ -39,6 +42,7 @@ namespace Algorithms101.RedTeam
             // Make a cycle
             previousNode.AddNext(root);
 
+            // Do insertion
             InsertNodeIntoSortedLinkedList(root, insertedValue);
 
             var actual = root.ToArray();
@@ -53,10 +57,22 @@ namespace Algorithms101.RedTeam
                 return;
             }
 
+            // Special case when inserting value is less than minimal one
             var currentNode = nodeWithMinimalValue;
+            if (nodeWithMinimalValue.Value.CompareTo(valueToInsert) >= 0)
+            {
+                while (currentNode.Next != nodeWithMinimalValue)
+                {
+                    currentNode = currentNode.Next;
+                }
+                currentNode.AddNext(valueToInsert);
+                return;
+            }
+
+            currentNode = nodeWithMinimalValue;
             while (true)
             {
-                if (currentNode.Next.Value.CompareTo(valueToInsert) >= 0)
+                if (currentNode.Next.Value.CompareTo(valueToInsert) >= 0 || currentNode.Next == nodeWithMinimalValue)
                 {
                     currentNode.AddNext(valueToInsert);
                     return;
