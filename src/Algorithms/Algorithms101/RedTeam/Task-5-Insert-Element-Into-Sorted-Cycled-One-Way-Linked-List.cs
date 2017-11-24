@@ -23,6 +23,28 @@ namespace Algorithms101.RedTeam
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(new[] { 1, 2, 3, 4, 6, 7, 8 }, 5, new[] { 1, 2, 3, 4, 5, 6, 7, 8 })]
+        public void TestMultipleNodeList(int[] inputItems, int insertedValue, int[] expected)
+        {
+            var root = new Node<int>(inputItems[0]);
+            var previousNode = root;
+
+            for (int i = 1; i < inputItems.Length; i++)
+            {
+                var node = new Node<int>(inputItems[i]);
+                previousNode.AddNext(node);
+                previousNode = node;
+            }
+            // Make a cycle
+            previousNode.AddNext(root);
+
+            InsertNodeIntoSortedLinkedList(root, insertedValue);
+
+            var actual = root.ToArray();
+            Assert.Equal(expected, actual);
+        }
+
         private void InsertNodeIntoSortedLinkedList<T>(Node<T> nodeWithMinimalValue, T valueToInsert) where T : IComparable<T>
         {
             if (nodeWithMinimalValue.Next == Node<T>.None || nodeWithMinimalValue == nodeWithMinimalValue.Next)
@@ -83,8 +105,8 @@ namespace Algorithms101.RedTeam
                 do
                 {
                     yield return node.Value;
-                    node = Next;
-                } while (node != start || node != None);
+                    node = node.Next;
+                } while (node != start && node != None);
             }
 
             IEnumerator IEnumerable.GetEnumerator()
