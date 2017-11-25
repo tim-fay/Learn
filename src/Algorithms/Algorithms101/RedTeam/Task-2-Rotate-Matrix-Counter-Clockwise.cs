@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Xunit;
 
@@ -153,6 +154,18 @@ namespace Algorithms101.RedTeam
             }
         };
 
+        public static TheoryData<string[], string[]> TestInputArray5()
+        {
+            var testData = new TheoryData<string[], string[]>();
+
+            var input = File.ReadAllLines(@".\RedTeam\TestData\Task-2-Matrix-Layer-Rotation-input09.txt");
+            var output = File.ReadAllLines(@".\RedTeam\TestData\Task-2-Matrix-Layer-Rotation-output09.txt");
+
+            testData.Add(input, output);
+
+            return testData;
+        }
+
         [Theory]
         [MemberData(nameof(TestInputArray1))]
         [MemberData(nameof(TestInputArray2))]
@@ -161,6 +174,51 @@ namespace Algorithms101.RedTeam
         public void RegularInputTest(int[,] input, int rotate, int[,] expected)
         {
             Assert.Equal(expected, Rotate(input, rotate));
+        }
+
+        [Theory]
+        [MemberData(nameof(TestInputArray5))]
+        public void HugeInputTest(string[] input, string[] expected)
+        {
+            var measure = new Stopwatch();
+            measure.Start();
+            string[] arrayParams = input[0].Split(' ');
+            int m = Convert.ToInt32(arrayParams[0]);
+            int n = Convert.ToInt32(arrayParams[1]);
+            int r = Convert.ToInt32(arrayParams[2]);
+
+            int[,] array = new int[m, n];
+
+            for (int i = 0; i < m; i++)
+            {
+                var arrayLine = input[i + 1].Split(' ');
+
+                for (int j = 0; j < n; j++)
+                {
+                    array[i, j] = Convert.ToInt32(arrayLine[j]);
+                }
+            }
+
+
+            int[,] expectedArray = new int[m, n];
+
+            for (int i = 0; i < m; i++)
+            {
+                var arrayLine = expected[i].Split(' ');
+
+                for (int j = 0; j < n; j++)
+                {
+                    expectedArray[i, j] = Convert.ToInt32(arrayLine[j]);
+                }
+            }
+            measure.Stop();
+            var ms = measure.ElapsedMilliseconds;
+
+            measure.Reset();
+            measure.Start();
+            Assert.Equal(expectedArray, Rotate(array, r));
+            measure.Stop();
+            ms = measure.ElapsedMilliseconds;
         }
 
         private int[,] Rotate(int[,] input, int rotate)
