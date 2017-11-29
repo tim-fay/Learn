@@ -27,6 +27,24 @@
     <None Update="RedTeam\TestData\Task-2-Matrix-Layer-Rotation-output09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-input00.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-input03.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-input07.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-output00.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-output03.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RedTeam\TestData\Task-6-Roads-And-Libraries-output07.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
