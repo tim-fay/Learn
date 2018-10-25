@@ -14,23 +14,44 @@ namespace VoyageIntoDeadlocking
             var host = await StartSilo();
             var client = await StartClient();
 
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            //await LaunchStreamingBroadcast(client);
+
+            ISuperUser user42 = client.GetGrain<ISuperUser>(42);
+            IUser user43 = client.GetGrain<ISuperUser>(43);
+            //IUser user = client.GetGrain<ISuperUser>(42);
+            await user42.DoSuper();
+            await user43.DoSimple();
+
+            var consumer555 = client.GetGrain<IConsumer>("Consumer 555");
+            var consumer777 = client.GetGrain<IConsumer>("Consumer 777");
+
+            await consumer555.Consume(user42);
+            await consumer555.Consume(user43);
+
+            await consumer777.Consume(user42);
+            await consumer777.Consume(user43);
             
-            
-            var planetEarthId = Guid.Empty;
-            var earthGrain = client.GetGrain<IRadioControl>(planetEarthId);
-            await earthGrain.BroadcastMessage("Onwards into the void!!");
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
             Console.WriteLine("Stopping server...");
             await host.StopAsync();
+        }
+
+        private static async Task LaunchStreamingBroadcast(IClusterClient client)
+        {
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+
+
+            var planetEarthId = Guid.Empty;
+            var earthGrain = client.GetGrain<IRadioControl>(planetEarthId);
+            await earthGrain.BroadcastMessage("Onwards into the void!!");
         }
 
         private static async Task<IClusterClient> StartClient()
