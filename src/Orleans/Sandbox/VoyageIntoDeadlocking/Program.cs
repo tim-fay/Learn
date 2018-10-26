@@ -2,20 +2,33 @@
 using System.Threading.Tasks;
 using Orleans;
 using Orleans.Hosting;
+using Orleans.Providers.Streams.AzureQueue;
+using Orleans.Streams;
 using VoyageIntoDeadlocking.Grains;
 
 namespace VoyageIntoDeadlocking
 {
     internal static class Program
     {
-       
         private static async Task Main(string[] args)
         {
             var host = await StartSilo();
             var client = await StartClient();
 
-            //await LaunchStreamingBroadcast(client);
+            await LaunchStreamingBroadcast(client);
 
+            //await LaunchContractInheritanceTest(client);
+
+
+            Console.WriteLine("Press key to exit...");
+            Console.ReadKey();
+
+            Console.WriteLine("Stopping server...");
+            await host.StopAsync();
+        }
+
+        private static async Task LaunchContractInheritanceTest(IClusterClient client)
+        {
             ISuperUser user42 = client.GetGrain<ISuperUser>(42);
             IUser user43 = client.GetGrain<ISuperUser>(43);
             //IUser user = client.GetGrain<ISuperUser>(42);
@@ -30,23 +43,16 @@ namespace VoyageIntoDeadlocking
 
             await consumer777.Consume(user42);
             await consumer777.Consume(user43);
-            
-
-            Console.WriteLine("Press key to exit...");
-            Console.ReadKey();
-
-            Console.WriteLine("Stopping server...");
-            await host.StopAsync();
         }
 
         private static async Task LaunchStreamingBroadcast(IClusterClient client)
         {
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Create();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
 
 
             var planetEarthId = Guid.Empty;
@@ -57,7 +63,9 @@ namespace VoyageIntoDeadlocking
         private static async Task<IClusterClient> StartClient()
         {
             var client = new ClientBuilder()
-                .AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
+                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "http://127.0.0.1:10001/"; }))
                 .UseLocalhostClustering()
                 .Build();
 
@@ -71,7 +79,10 @@ namespace VoyageIntoDeadlocking
         {
             // define the cluster configuration
             var builder = new SiloHostBuilder()
-                .AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
+                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "http://127.0.0.1:10001/"; }))
+                .AddMemoryGrainStorage("PubSubStore")
                 .AddMemoryGrainStorageAsDefault()
                 .UseLocalhostClustering();
 

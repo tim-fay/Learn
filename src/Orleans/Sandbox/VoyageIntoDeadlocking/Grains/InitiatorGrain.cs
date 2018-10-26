@@ -45,7 +45,9 @@ namespace VoyageIntoDeadlocking.Grains
 
         public async Task BroadcastMessage(string message)
         {
+            Console.WriteLine($"Start broadcasting");
             await RadioStream.OnNextAsync(Grains.BroadcastMessage.New("Message into the void!", this));
+            Console.WriteLine($"Stop broadcasting");
         }
 
         public Task Listen(string replyMessage)
@@ -57,7 +59,7 @@ namespace VoyageIntoDeadlocking.Grains
 
     public interface IAlienPlanet : IGrainWithGuidKey
     {
-        Task Create();
+        Task Discover();
     }
 
     public class AlienPlanetGrain : Grain, IAlienPlanet
@@ -76,9 +78,9 @@ namespace VoyageIntoDeadlocking.Grains
             return base.OnActivateAsync();
         }
 
-        public Task Create()
+        public Task Discover()
         {
-            Console.WriteLine($"Planet {this.GetPrimaryKey().ToString()} created.");
+            Console.WriteLine($"Alien planet {this.GetPrimaryKey().ToString()} discovered.");
             return Task.CompletedTask;
         }
     }
