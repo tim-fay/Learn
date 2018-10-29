@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inheritance.Client", "Inher
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inheritance.Contracts", "Inheritance\Inheritance.Contracts\Inheritance.Contracts.csproj", "{31326B38-CD3A-45C7-8EE9-64A33B5F6AE4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reminders", "Reminders", "{42C63B4B-E5F0-404D-B818-CEABA2D6DF0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemindersPerformanceCheck", "Reminders\RemindersPerformanceCheck\RemindersPerformanceCheck.csproj", "{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +36,15 @@ Global
 		{31326B38-CD3A-45C7-8EE9-64A33B5F6AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31326B38-CD3A-45C7-8EE9-64A33B5F6AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31326B38-CD3A-45C7-8EE9-64A33B5F6AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{332F6A2F-1FFE-4670-8E84-180CDA9F13B4} = {09F78557-9D86-4BB9-B871-38D269A350BE}
 		{2F90306D-E923-4AFD-B452-DDA285974156} = {09F78557-9D86-4BB9-B871-38D269A350BE}
 		{31326B38-CD3A-45C7-8EE9-64A33B5F6AE4} = {09F78557-9D86-4BB9-B871-38D269A350BE}
+		{080D5D82-D8A4-4DBA-8DFA-920F9CC3FA5C} = {42C63B4B-E5F0-404D-B818-CEABA2D6DF0F}
 	EndGlobalSection
 EndGlobal
