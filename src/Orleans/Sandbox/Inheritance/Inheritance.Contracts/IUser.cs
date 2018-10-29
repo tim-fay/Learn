@@ -3,7 +3,7 @@ using Orleans;
 
 namespace Inheritance.Contracts
 {
-    public interface IUser : IGrainWithIntegerKey
+    public interface IUser // : IGrainWithIntegerKey
     {
         Task DoSimple();
     }
