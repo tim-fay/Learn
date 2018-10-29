@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Inheritance.Contracts;
 using Orleans;
 
 namespace Inheritance.Client
@@ -10,14 +11,13 @@ namespace Inheritance.Client
         {
             var client = await StartClient();
 
-            //await LaunchContractInheritanceTest(client);
+            await LaunchContractInheritanceTest(client);
 
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
-            Console.WriteLine("Stopping server...");
-            await host.StopAsync();
+            Console.WriteLine("Stopping client...");
         }
 
         private static async Task LaunchContractInheritanceTest(IClusterClient client)
