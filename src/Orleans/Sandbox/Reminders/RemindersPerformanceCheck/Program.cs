@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Orleans;
+using Orleans.Configuration;
 using Orleans.Hosting;
 using RemindersPerformanceCheck.Grains;
 
@@ -9,12 +10,12 @@ namespace RemindersPerformanceCheck
 {
     internal static class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             var host = await StartSilo();
             var client = await StartClient();
 
-            await LaunchReminders(client, 1000, TimeSpan.FromSeconds(1));
+            await LaunchReminders(client, 10000, TimeSpan.FromSeconds(20));
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
@@ -41,10 +42,11 @@ namespace RemindersPerformanceCheck
                 fireworks.Add(fireworkIgnition);
             }
             
-            Console.WriteLine($"Fireworks initiated and started!");
-            Console.WriteLine("Waiting for fireworks...");
-
+            Console.WriteLine($"{DateTime.Now}: Fireworks initiated and started!");
             await Task.WhenAll(fireworks);
+            
+            Console.WriteLine($"{DateTime.Now}: Waiting for fireworks...");
+
 
             //counterValue = await counter.ReadCurrentValue();
             //Console.WriteLine($"See those {counterValue} fireworks in the sky!!!");            
@@ -53,6 +55,7 @@ namespace RemindersPerformanceCheck
         private static async Task<IClusterClient> StartClient()
         {
             var client = new ClientBuilder()
+                //.UseAzureStorageClustering(options => options.ConnectionString = "UseDevelopmentStorage=true")
                 .UseLocalhostClustering()
                 .Build();
 
@@ -66,8 +69,21 @@ namespace RemindersPerformanceCheck
         {
             // define the cluster configuration
             var builder = new SiloHostBuilder()
-                .AddMemoryGrainStorageAsDefault()
-                .UseInMemoryReminderService()
+//                .Configure<ClusterOptions>(options =>
+//                {
+//                    options.ClusterId = "ClarityOrleansClusterId";
+//                    options.ServiceId = "ClarityOrleansServiceId";
+//                })
+                .UseAzureTableReminderService(options =>
+                {
+                    options.ConnectionString = "UseDevelopmentStorage=true";
+                })
+                //.UseInMemoryReminderService()
+//                .UseAzureStorageClustering(options =>
+//                {
+//                    options.ConnectionString = "";
+//                });
+                //.AddMemoryGrainStorageAsDefault()
                 .UseLocalhostClustering();
 
             var host = builder.Build();
