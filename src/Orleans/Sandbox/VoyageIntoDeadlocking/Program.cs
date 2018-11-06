@@ -26,17 +26,18 @@ namespace VoyageIntoDeadlocking
 
         private static async Task LaunchStreamingBroadcast(IClusterClient client)
         {
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
-            await client.GetGrain<IAlienPlanet>(Guid.NewGuid()).Discover();
+            await client.GetGrain<IAlienPlanet>("Venus").Discover();
+            await client.GetGrain<IAlienPlanet>("Jupiter").Discover();
+            await client.GetGrain<IAlienPlanet>("Mars").Discover();
+            await client.GetGrain<IAlienPlanet>("Uranus").Discover();
+            await client.GetGrain<IAlienPlanet>("Pluto").Discover();
 
 
-            var planetEarthId = Guid.Empty;
+            var planetEarthId = "Earth";
             var earthGrain = client.GetGrain<IRadioControl>(planetEarthId);
-            await earthGrain.BroadcastMessage("Onwards into the void!!");
+            var earthGrain2 = client.GetGrain<IRadioSource>(planetEarthId);
+            await earthGrain.BroadcastMessage("Onward into the void!!");
+            await earthGrain2.ReplyToSource("Reply to self...");
         }
 
         private static async Task<IClusterClient> StartClient()
@@ -45,6 +46,7 @@ namespace VoyageIntoDeadlocking
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
                     optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                //.azure
                 .UseLocalhostClustering()
                 .Build();
 
@@ -61,6 +63,7 @@ namespace VoyageIntoDeadlocking
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
                     optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
                 //.AddMemoryGrainStorage("PubSubStore")
                 .AddMemoryGrainStorageAsDefault()
                 .UseLocalhostClustering();

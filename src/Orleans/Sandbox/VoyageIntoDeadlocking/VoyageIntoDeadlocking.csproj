@@ -8,7 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Orleans.Client" Version="2.1.2" />
+      <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="2.1.2" />
       <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="2.1.2" />
+      <PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="2.1.2" />
       <PackageReference Include="Microsoft.Orleans.Server" Version="2.1.2" />
       <PackageReference Include="Microsoft.Orleans.Streaming.AzureStorage" Version="2.1.2" />
     </ItemGroup>
