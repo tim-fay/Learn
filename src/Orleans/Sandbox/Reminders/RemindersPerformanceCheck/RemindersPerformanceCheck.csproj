@@ -10,8 +10,10 @@
         <PackageReference Include="Microsoft.Orleans.Client" Version="2.1.2" />
         <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="2.1.2" />
         <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="2.1.2" />
+        <PackageReference Include="Microsoft.Orleans.Reminders.AdoNet" Version="2.1.2" />
         <PackageReference Include="Microsoft.Orleans.Reminders.AzureStorage" Version="2.1.2" />
         <PackageReference Include="Microsoft.Orleans.Server" Version="2.1.2" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
     </ItemGroup>
     
 </Project>

@@ -15,7 +15,7 @@ namespace RemindersPerformanceCheck
             var host = await StartSilo();
             var client = await StartClient();
 
-            await LaunchReminders(client, 10000, TimeSpan.FromSeconds(20));
+            await LaunchReminders(client, 100, TimeSpan.FromSeconds(20));
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
@@ -74,10 +74,15 @@ namespace RemindersPerformanceCheck
 //                    options.ClusterId = "ClarityOrleansClusterId";
 //                    options.ServiceId = "ClarityOrleansServiceId";
 //                })
-                .UseAzureTableReminderService(options =>
+                .UseAdoNetReminderService(options =>
                 {
-                    options.ConnectionString = "UseDevelopmentStorage=true";
+                    options.ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Orleans;Integrated Security=True;Pooling=False;Max Pool Size=200;MultipleActiveResultSets=True";
+                    options.Invariant = "System.Data.SqlClient";
                 })
+//                .UseAzureTableReminderService(options =>
+//                {
+//                    options.ConnectionString = "UseDevelopmentStorage=true";
+//                })
                 //.UseInMemoryReminderService()
 //                .UseAzureStorageClustering(options =>
 //                {

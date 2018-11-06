@@ -44,7 +44,7 @@ namespace VoyageIntoDeadlocking
             var client = new ClientBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
-                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "http://127.0.0.1:10001/"; }))
+                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .UseLocalhostClustering()
                 .Build();
 
@@ -60,8 +60,8 @@ namespace VoyageIntoDeadlocking
             var builder = new SiloHostBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName,
-                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "http://127.0.0.1:10001/"; }))
-                .AddMemoryGrainStorage("PubSubStore")
+                    optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                //.AddMemoryGrainStorage("PubSubStore")
                 .AddMemoryGrainStorageAsDefault()
                 .UseLocalhostClustering();
 
