@@ -29,7 +29,7 @@ namespace VoyageIntoDeadlocking
             await client.GetGrain<IAlienPlanet>("Venus").Discover();
             await client.GetGrain<IAlienPlanet>("Jupiter").Discover();
             await client.GetGrain<IAlienPlanet>("Mars").Discover();
-            await client.GetGrain<IAlienPlanet>("Uranus").Discover();
+            await client.GetGrain<IAlienPlanet>("Mercury").Discover();
             await client.GetGrain<IAlienPlanet>("Pluto").Discover();
 
 
