@@ -1,6 +1,6 @@
 using System;
 
-namespace VoyageIntoDeadlocking.Grains
+namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
     public static class Streams
     {

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Providers.Streams.AzureQueue;
-using Orleans.Streams;
-using VoyageIntoDeadlocking.Grains;
+using VoyageIntoDeadlocking.ExplicitSubscriptionsGrains;
+using VoyageIntoDeadlocking.ImplicitSubscriptionsGrains;
 
 namespace VoyageIntoDeadlocking
 {

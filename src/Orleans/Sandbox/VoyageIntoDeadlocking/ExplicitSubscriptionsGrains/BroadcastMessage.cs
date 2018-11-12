@@ -1,4 +1,4 @@
-namespace VoyageIntoDeadlocking.Grains
+namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
     public class BroadcastMessage
     {

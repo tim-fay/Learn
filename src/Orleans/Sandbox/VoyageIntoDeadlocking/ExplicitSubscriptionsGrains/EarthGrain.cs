@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Orleans;
 using Orleans.Streams;
 
-namespace VoyageIntoDeadlocking.Grains
+namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
     public class EarthGrain : Grain, IRadioControl, IRadioSource
     {
@@ -19,7 +19,7 @@ namespace VoyageIntoDeadlocking.Grains
         public async Task BroadcastMessage(string message)
         {
             Console.WriteLine($"Start broadcasting");
-            var broadcastMessage = Grains.BroadcastMessage.New("Message into the void!", this.GetPrimaryKeyString());
+            var broadcastMessage = ExplicitSubscriptionsGrains.BroadcastMessage.New("Message into the void!", this.GetPrimaryKeyString());
             await RadioStream.OnNextAsync(broadcastMessage);
             Console.WriteLine($"Stop broadcasting");
         }

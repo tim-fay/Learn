@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Orleans;
 using Orleans.Streams;
 
-namespace VoyageIntoDeadlocking.Grains
+namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
     public class AlienPlanetGrain : Grain, IAlienPlanet
     {
