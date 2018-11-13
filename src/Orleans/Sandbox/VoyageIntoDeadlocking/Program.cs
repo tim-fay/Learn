@@ -32,13 +32,13 @@ namespace VoyageIntoDeadlocking
             await producer.PostData("Produced data #1");
 
             await Task.Delay(TimeSpan.FromSeconds(5));
-            var result = await client.GetGrain<IImplicitSubscription>(StreamIds.DataStreamId).HasReceivedEvent();
+            var result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
             Console.WriteLine($"Has received {result}");
             
             await producer.PostData("Produced data #2");
 
             await Task.Delay(TimeSpan.FromSeconds(5));
-            result = await client.GetGrain<IImplicitSubscription>(StreamIds.DataStreamId).HasReceivedEvent();
+            result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
             Console.WriteLine($"Has received {result}");
             
             //for (int i = 0; i < 10; i++)
@@ -67,8 +67,8 @@ namespace VoyageIntoDeadlocking
         {
             var client = new ClientBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
-                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
-                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Namespaces.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ExplicitConstants.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 //.azure
                 .UseLocalhostClustering()
                 .Build();
@@ -84,8 +84,8 @@ namespace VoyageIntoDeadlocking
             // define the cluster configuration
             var builder = new SiloHostBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
-                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Streams.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
-                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(Namespaces.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ExplicitConstants.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
                 //.AddMemoryGrainStorage("PubSubStore")
                 .AddMemoryGrainStorageAsDefault()

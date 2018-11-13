@@ -10,8 +10,8 @@ namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
         
         public override Task OnActivateAsync()
         {
-            var streamProvider = GetStreamProvider(Namespaces.ProviderName);
-            Stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, Namespaces.StreamNamespace);
+            var streamProvider = GetStreamProvider(ImplicitConstants.ProviderName);
+            Stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
             
             return base.OnActivateAsync();
         }

@@ -3,7 +3,7 @@ using Orleans;
 
 namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
 {
-    public interface IImplicitSubscription : IGrainWithGuidKey
+    public interface IImplicitConsumer : IGrainWithGuidKey
     {
         Task<bool> HasReceivedEvent();
     }

@@ -5,15 +5,15 @@ using Orleans.Streams;
 
 namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
 {
-    [ImplicitStreamSubscription(Namespaces.StreamNamespace)]
-    public class ImplicitSubscriptionGrain : Grain, IImplicitSubscription
+    [ImplicitStreamSubscription(ImplicitConstants.StreamNamespace)]
+    public class ImplicitConsumerGrain : Grain, IImplicitConsumer
     {
         private bool ReceivedEvent { get; set; }
         
         public override async Task OnActivateAsync()
         {
-            var streamProvider = GetStreamProvider(Namespaces.ProviderName);
-            var stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, Namespaces.StreamNamespace);
+            var streamProvider = GetStreamProvider(ImplicitConstants.ProviderName);
+            var stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
 
             await stream.SubscribeAsync((item, _) =>
                 {

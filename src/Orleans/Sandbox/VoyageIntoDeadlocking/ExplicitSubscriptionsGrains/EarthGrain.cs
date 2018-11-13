@@ -11,8 +11,8 @@ namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
         
         public override Task OnActivateAsync()
         {
-            var streamProvider = GetStreamProvider(Streams.RadioStreamName);
-            RadioStream = streamProvider.GetStream<BroadcastMessage>(Streams.RadioStreamId, Streams.RadioStreamNamespace);
+            var streamProvider = GetStreamProvider(ExplicitConstants.RadioStreamName);
+            RadioStream = streamProvider.GetStream<BroadcastMessage>(ExplicitConstants.RadioStreamId, ExplicitConstants.RadioStreamNamespace);
             return base.OnActivateAsync();
         }
 
