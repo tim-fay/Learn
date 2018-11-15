@@ -15,15 +15,36 @@ namespace VoyageIntoDeadlocking
             var host = await StartSilo();
             var client = await StartClient();
 
-            await LaunchImplicitStreamingExample(client);
+            //await LaunchImplicitStreamingExample(client);
             //await LaunchStreamingBroadcast(client);
-
+            await LaunchInterfaceStatedGrain(client);
+            
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
             Console.WriteLine("Stopping server...");
             await host.StopAsync();
         }
+
+        private static async Task LaunchInterfaceStatedGrain(IClusterClient client)
+        {
+            var richStateGrain = client.GetGrain<IRichStateGrain>("AAA");
+            
+            var data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
+            
+            await richStateGrain.SaveState("text 1", new DateTime(2010, 1, 1), 42);
+
+            data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
+
+            await richStateGrain.SaveState(RichData.New("text 2", new DateTime(2020, 2, 2), 43));
+
+            data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
+
+        }
+
 
         private static async Task LaunchImplicitStreamingExample(IClusterClient client)
         {
@@ -35,11 +56,11 @@ namespace VoyageIntoDeadlocking
             var result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
             Console.WriteLine($"Has received {result}");
             
-            await producer.PostData("Produced data #2");
-
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
-            Console.WriteLine($"Has received {result}");
+//            await producer.PostData("Produced data #2");
+//
+//            await Task.Delay(TimeSpan.FromSeconds(5));
+//            result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
+//            Console.WriteLine($"Has received {result}");
             
             //for (int i = 0; i < 10; i++)
             {
@@ -69,7 +90,6 @@ namespace VoyageIntoDeadlocking
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ExplicitConstants.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
-                //.azure
                 .UseLocalhostClustering()
                 .Build();
 
@@ -88,7 +108,7 @@ namespace VoyageIntoDeadlocking
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
                 //.AddMemoryGrainStorage("PubSubStore")
-                .AddMemoryGrainStorageAsDefault()
+                .AddAzureBlobGrainStorageAsDefault(options => options.ConnectionString = "UseDevelopmentStorage=true")
                 .UseLocalhostClustering();
 
             var host = builder.Build();
