@@ -6,7 +6,7 @@ using Orleans.Streams;
 
 namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
-    public class AlienPlanetGrain : Grain, IAlienPlanet, IAsyncObserver<BroadcastMessage>
+    public class AlienPlanetGrain : Grain, IAlienPlanet
     {
         public override async Task OnActivateAsync()
         {
@@ -15,7 +15,7 @@ namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
             var subscriptions = await stream.GetAllSubscriptionHandles();
             if (subscriptions.Count == 0)
             {
-                var streamSubscriptionHandle = await stream.SubscribeAsync(this);
+                var streamSubscriptionHandle = await stream.SubscribeAsync(RadioBroadcastHandler);
             }
             else
             {
@@ -39,21 +39,6 @@ namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
         {
             Console.WriteLine($"Alien planet {this.GetPrimaryKeyString()} discovered.");
             return Task.CompletedTask;
-        }
-
-        public Task OnNextAsync(BroadcastMessage item, StreamSequenceToken token = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task OnCompletedAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task OnErrorAsync(Exception ex)
-        {
-            throw new NotImplementedException();
         }
     }
 }
