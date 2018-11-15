@@ -6,21 +6,40 @@ using Orleans.Streams;
 
 namespace VoyageIntoDeadlocking.ExplicitSubscriptionsGrains
 {
-    public class AlienPlanetGrain : Grain, IAlienPlanet
+    public class AlienPlanetState
+    {
+        public StreamSubscriptionHandle<BroadcastMessage> SubscriptionHandle { get; private set; }
+        public bool HasNoHandle => SubscriptionHandle != null;
+
+        public void SetHandler(StreamSubscriptionHandle<BroadcastMessage> handle)
+        {
+            SubscriptionHandle = handle;
+        }
+    }
+    
+    public class AlienPlanetGrain : Grain<AlienPlanetState>, IAlienPlanet
     {
         public override async Task OnActivateAsync()
         {
             var streamProvider = GetStreamProvider(ExplicitConstants.RadioStreamName);
             var stream = streamProvider.GetStream<BroadcastMessage>(ExplicitConstants.RadioStreamId, ExplicitConstants.RadioStreamNamespace);
-            var subscriptions = await stream.GetAllSubscriptionHandles();
-            if (subscriptions.Count == 0)
+            if (State.HasNoHandle)
             {
                 var streamSubscriptionHandle = await stream.SubscribeAsync(RadioBroadcastHandler);
+                State.SetHandler(streamSubscriptionHandle);
             }
-            else
-            {
-                await subscriptions.Single().ResumeAsync(RadioBroadcastHandler);
-            }
+
+            await WriteStateAsync();
+            
+//            var subscriptions = await stream.GetAllSubscriptionHandles();
+//            if (subscriptions.Count == 0)
+//            {
+//                await stream.SubscribeAsync(RadioBroadcastHandler);
+//            }
+//            else
+//            {
+//                await subscriptions.Single().ResumeAsync(RadioBroadcastHandler);
+//            }
             
             await base.OnActivateAsync();
 
