@@ -9,15 +9,36 @@ namespace Inheritance.Client
     {
         private static async Task Main(string[] args)
         {
+            await Task.Delay(5000);
             var client = await StartClient();
 
-            await LaunchContractInheritanceTest(client);
-
+            //await LaunchContractInheritanceTest(client);
+            await LaunchSoloTest(client);
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
             Console.WriteLine("Stopping client...");
+        }
+
+        private static async Task LaunchSoloTest(IClusterClient client)
+        {
+            //var solo = client.GetGrain<ISolo>("Han"); // Expected to receive Exception: Cannot resolve grain interface ID=xxx to a grain class because of multiple implementations of it.
+
+//            ISolo solo = client.GetGrain<IHanSolo>("Han");
+//            await solo.Speak();
+//            
+//            solo = client.GetGrain<IFakeSolo>("Han");
+//            await solo.Speak();
+
+            IHanSolo hanSolo = client.GetGrain<IHanSolo>("Han and Chewie");
+            await hanSolo.Speak();
+
+            var chewie2 = hanSolo.AsReference<IChewie>();
+            await chewie2.Roar();
+            
+            IChewie chewie = client.GetGrain<IChewie>("Han and Chewie");
+            await chewie.Roar();
         }
 
         private static async Task LaunchContractInheritanceTest(IClusterClient client)

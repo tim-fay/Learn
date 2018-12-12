@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Providers.Streams.AzureQueue;
+using Orleans.Streams;
 using VoyageIntoDeadlocking.ExplicitSubscriptionsGrains;
 using VoyageIntoDeadlocking.ImplicitSubscriptionsGrains;
 
@@ -16,8 +17,8 @@ namespace VoyageIntoDeadlocking
             var client = await StartClient();
 
             //await LaunchImplicitStreamingExample(client);
-            //await LaunchStreamingBroadcast(client);
-            await LaunchInterfaceStatedGrain(client);
+            await LaunchStreamingBroadcast(client);
+            //await LaunchInterfaceStatedGrain(client);
             
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
@@ -26,25 +27,21 @@ namespace VoyageIntoDeadlocking
             await host.StopAsync();
         }
 
-        private static async Task LaunchInterfaceStatedGrain(IClusterClient client)
+        private static async Task LaunchStreamingBroadcast(IClusterClient client)
         {
-            var richStateGrain = client.GetGrain<IRichStateGrain>("AAA");
-            
-            var data = await richStateGrain.ReadState();
-            Console.WriteLine($"Reading state: {data}");
-            
-            await richStateGrain.SaveState("text 1", new DateTime(2010, 1, 1), 42);
+            await client.GetGrain<IAlienPlanet>("Venus").Discover();
+//            await client.GetGrain<IAlienPlanet>("Jupiter").Discover();
+//            await client.GetGrain<IAlienPlanet>("Mars").Discover();
+//            await client.GetGrain<IAlienPlanet>("Mercury").Discover();
+//            await client.GetGrain<IAlienPlanet>("Pluto").Discover();
+            await client.GetGrain<ISecondStreamGrain>("Second").SubscribeToStream();
 
-            data = await richStateGrain.ReadState();
-            Console.WriteLine($"Reading state: {data}");
-
-            await richStateGrain.SaveState(RichData.New("text 2", new DateTime(2020, 2, 2), 43));
-
-            data = await richStateGrain.ReadState();
-            Console.WriteLine($"Reading state: {data}");
-
+            var planetEarthId = "Earth";
+            var earthGrain = client.GetGrain<IRadioControl>(planetEarthId);
+            var earthGrain2 = client.GetGrain<IRadioSource>(planetEarthId);
+            await earthGrain.BroadcastMessage("Onward into the void!!");
+            await earthGrain2.ReplyToSource("Reply to self...");
         }
-
 
         private static async Task LaunchImplicitStreamingExample(IClusterClient client)
         {
@@ -68,20 +65,23 @@ namespace VoyageIntoDeadlocking
             }
         }
 
-        private static async Task LaunchStreamingBroadcast(IClusterClient client)
+        private static async Task LaunchInterfaceStatedGrain(IClusterClient client)
         {
-            await client.GetGrain<IAlienPlanet>("Venus").Discover();
-            await client.GetGrain<IAlienPlanet>("Jupiter").Discover();
-            await client.GetGrain<IAlienPlanet>("Mars").Discover();
-            await client.GetGrain<IAlienPlanet>("Mercury").Discover();
-            await client.GetGrain<IAlienPlanet>("Pluto").Discover();
+            var richStateGrain = client.GetGrain<IRichStateGrain>("AAA");
+            
+            var data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
+            
+            await richStateGrain.SaveState("text 1", new DateTime(2010, 1, 1), 42);
 
+            data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
 
-            var planetEarthId = "Earth";
-            var earthGrain = client.GetGrain<IRadioControl>(planetEarthId);
-            var earthGrain2 = client.GetGrain<IRadioSource>(planetEarthId);
-            await earthGrain.BroadcastMessage("Onward into the void!!");
-            await earthGrain2.ReplyToSource("Reply to self...");
+            await richStateGrain.SaveState(RichData.New("text 2", new DateTime(2020, 2, 2), 43));
+
+            data = await richStateGrain.ReadState();
+            Console.WriteLine($"Reading state: {data}");
+
         }
 
         private static async Task<IClusterClient> StartClient()
@@ -108,7 +108,7 @@ namespace VoyageIntoDeadlocking
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
                 //.AddMemoryGrainStorage("PubSubStore")
-                .AddAzureBlobGrainStorageAsDefault(options => options.ConnectionString = "UseDevelopmentStorage=true")
+                .AddAzureTableGrainStorageAsDefault(options => options.ConnectionString = "UseDevelopmentStorage=true")
                 .UseLocalhostClustering();
 
             var host = builder.Build();
