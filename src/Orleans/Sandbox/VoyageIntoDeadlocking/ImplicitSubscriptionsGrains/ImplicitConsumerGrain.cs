@@ -13,12 +13,12 @@ namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
         public override async Task OnActivateAsync()
         {
             var streamProvider = GetStreamProvider(ImplicitConstants.ProviderName);
-            var stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
+            var stream = streamProvider.GetStream<IEvent>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
 
-            await stream.SubscribeAsync((item, _) =>
+            await stream.SubscribeAsync((@event, _) =>
                 {
                     ReceivedEvent = true;
-                    Console.WriteLine($"Next item received: '{item}'");
+                    Console.WriteLine($"Next event received: '{@event.What}'");
                     return Task.CompletedTask;
                 },
                 exception =>

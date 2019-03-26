@@ -6,6 +6,7 @@ using Orleans.Providers.Streams.AzureQueue;
 using Orleans.Streams;
 using VoyageIntoDeadlocking.ExplicitSubscriptionsGrains;
 using VoyageIntoDeadlocking.ImplicitSubscriptionsGrains;
+using VoyageIntoDeadlocking.SmsExperiments;
 
 namespace VoyageIntoDeadlocking
 {
@@ -16,8 +17,9 @@ namespace VoyageIntoDeadlocking
             var host = await StartSilo();
             var client = await StartClient();
 
-            //await LaunchImplicitStreamingExample(client);
-            await LaunchStreamingBroadcast(client);
+            //await LunchSmsDeadlockEncounter(client);
+            await LaunchImplicitStreamingExample(client);
+            //await LaunchStreamingBroadcast(client);
             //await LaunchInterfaceStatedGrain(client);
             
             Console.WriteLine("Press key to exit...");
@@ -25,6 +27,12 @@ namespace VoyageIntoDeadlocking
 
             Console.WriteLine("Stopping server...");
             await host.StopAsync();
+        }
+
+        private static async Task LunchSmsDeadlockEncounter(IClusterClient client)
+        {
+            var sender = client.GetGrain<ISender>("sender");
+            await sender.Broadcast(42);
         }
 
         private static async Task LaunchStreamingBroadcast(IClusterClient client)
@@ -47,7 +55,9 @@ namespace VoyageIntoDeadlocking
         {
             var producer = client.GetGrain<IDataProducer>("Producer");
 
-            await producer.PostData("Produced data #1");
+            await producer.PostData(new Ringing());
+            await producer.PostData(new Connecting());
+            await producer.PostData(new Whatever());
 
             await Task.Delay(TimeSpan.FromSeconds(5));
             var result = await client.GetGrain<IImplicitConsumer>(Guid.Empty).HasReceivedEvent();
@@ -87,7 +97,7 @@ namespace VoyageIntoDeadlocking
         private static async Task<IClusterClient> StartClient()
         {
             var client = new ClientBuilder()
-                //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                .AddSimpleMessageStreamProvider(ExplicitConstants.SmsStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ExplicitConstants.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .UseLocalhostClustering()
@@ -103,7 +113,7 @@ namespace VoyageIntoDeadlocking
         {
             // define the cluster configuration
             var builder = new SiloHostBuilder()
-                //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
+                .AddSimpleMessageStreamProvider(ExplicitConstants.SmsStreamName)
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ExplicitConstants.RadioStreamName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>(ImplicitConstants.ProviderName, optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")

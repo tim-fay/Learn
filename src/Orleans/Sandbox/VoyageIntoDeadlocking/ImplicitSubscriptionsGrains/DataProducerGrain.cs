@@ -6,19 +6,19 @@ namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
 {
     public class DataProducerGrain : Grain, IDataProducer
     {
-        private IAsyncStream<string> Stream { get; set; }
+        private IAsyncStream<IEvent> Stream { get; set; }
         
         public override Task OnActivateAsync()
         {
             var streamProvider = GetStreamProvider(ImplicitConstants.ProviderName);
-            Stream = streamProvider.GetStream<string>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
+            Stream = streamProvider.GetStream<IEvent>(StreamIds.DataStreamId, ImplicitConstants.StreamNamespace);
             
             return base.OnActivateAsync();
         }
 
-        public async Task PostData(string text)
+        public async Task PostData(IEvent @event)
         {
-            await Stream.OnNextAsync($"1-st part of {text}");
+            await Stream.OnNextAsync(@event);
             //await Stream.OnNextAsync($"2-nd part of {text}");
             //await Stream.OnNextAsync($"3-rd part of {text}");
 

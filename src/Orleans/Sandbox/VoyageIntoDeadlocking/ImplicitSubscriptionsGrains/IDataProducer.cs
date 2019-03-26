@@ -5,6 +5,6 @@ namespace VoyageIntoDeadlocking.ImplicitSubscriptionsGrains
 {
     public interface IDataProducer : IGrainWithStringKey
     {
-        Task PostData(string text);
+        Task PostData(IEvent @event);
     }
 }

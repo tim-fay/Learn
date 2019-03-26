@@ -13,12 +13,22 @@ namespace Inheritance.Client
             var client = await StartClient();
 
             //await LaunchContractInheritanceTest(client);
-            await LaunchSoloTest(client);
+            //await LaunchSoloTest(client);
+            await LaunchStormtrooperTest(client);
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
             Console.WriteLine("Stopping client...");
+        }
+
+        private static async Task LaunchStormtrooperTest(IClusterClient client)
+        {
+            var barrack = client.GetGrain<IBarrack>("DS-II, North bridge");
+            IStormtrooper<Pistol> stormtrooperWithPistol = await barrack.GetStormtrooper<Pistol>("FN-666");
+            await stormtrooperWithPistol.Fire();
+            IStormtrooper<Blaster> stormtrooperWithBlaster = await barrack.GetStormtrooper<Blaster>("FN-777");
+            await stormtrooperWithBlaster.Fire();
         }
 
         private static async Task LaunchSoloTest(IClusterClient client)
