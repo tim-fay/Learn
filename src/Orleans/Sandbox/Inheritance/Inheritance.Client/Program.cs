@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Inheritance.Contracts;
 using Orleans;
+using Orleans.Hosting;
+using Orleans.Providers.Streams.AzureQueue;
 
 namespace Inheritance.Client
 {
@@ -25,10 +27,15 @@ namespace Inheritance.Client
         private static async Task LaunchStormtrooperTest(IClusterClient client)
         {
             var barrack = client.GetGrain<IBarrack>("DS-II, North bridge");
-            IStormtrooper<Pistol> stormtrooperWithPistol = await barrack.GetStormtrooper<Pistol>("FN-666");
-            await stormtrooperWithPistol.Fire();
-            IStormtrooper<Blaster> stormtrooperWithBlaster = await barrack.GetStormtrooper<Blaster>("FN-777");
-            await stormtrooperWithBlaster.Fire();
+            IStormtrooper<Pistol> stormtrooperWithPistol1 = await barrack.GetStormtrooper<Pistol>("FN-666");
+            await stormtrooperWithPistol1.Fire();
+            IStormtrooper<Pistol> stormtrooperWithPistol2 = await barrack.GetStormtrooper<Pistol>("FN-667");
+            await stormtrooperWithPistol2.Fire();
+            IStormtrooper<Blaster> stormtrooperWithBlaster1 = await barrack.GetStormtrooper<Blaster>("FN-777");
+            await stormtrooperWithBlaster1.Fire();
+            IStormtrooper<Blaster> stormtrooperWithBlaster2 = await barrack.GetStormtrooper<Blaster>("FN-778");
+            await stormtrooperWithBlaster2.Fire();
+            await stormtrooperWithBlaster2.CallForReinforcement<Pistol>();
         }
 
         private static async Task LaunchSoloTest(IClusterClient client)
@@ -74,6 +81,7 @@ namespace Inheritance.Client
             var client = new ClientBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .UseLocalhostClustering()
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>("aqs", optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
                 .Build();
 
             await client.Connect();

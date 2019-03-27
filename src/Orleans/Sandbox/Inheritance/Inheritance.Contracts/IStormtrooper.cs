@@ -8,6 +8,8 @@ namespace Inheritance.Contracts
     {
         Task LoadUp();
         Task Fire();
+        Task CallForReinforcement<TRequestedWeapon>()
+            where TRequestedWeapon : Weapon, new();
     }
 
     public abstract class Weapon

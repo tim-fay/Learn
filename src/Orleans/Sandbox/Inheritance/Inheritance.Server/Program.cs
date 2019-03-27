@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Orleans.Hosting;
+using Orleans.Providers.Streams.AzureQueue;
 
 namespace Inheritance.Server
 {
@@ -23,6 +24,8 @@ namespace Inheritance.Server
             var builder = new SiloHostBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 .AddMemoryGrainStorageAsDefault()
+                .AddAzureQueueStreams<AzureQueueDataAdapterV2>("aqs", optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
+                .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
                 .UseLocalhostClustering();
 
             var host = builder.Build();
