@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Inheritance.Contracts;
+using Inheritance.Contracts.Recovery;
 using Orleans;
 using Orleans.Hosting;
 using Orleans.Providers.Streams.AzureQueue;
@@ -9,19 +12,71 @@ namespace Inheritance.Client
 {
     internal static class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             await Task.Delay(5000);
             var client = await StartClient();
 
             //await LaunchContractInheritanceTest(client);
             //await LaunchSoloTest(client);
-            await LaunchStormtrooperTest(client);
+            //await LaunchStormtrooperTest(client);
+
+            await LaunchRecoverableTest(client);
 
             Console.WriteLine("Press key to exit...");
             Console.ReadKey();
 
             Console.WriteLine("Stopping client...");
+        }
+
+        private static async Task LaunchRecoverableTest(IClusterClient client)
+        {
+            Console.WriteLine("Init phase started...");
+            const int idCount = 10;
+            List<long> randomIdList = Enumerable.Range(1, idCount).Select(id => (long)id).ToList();
+
+            foreach (var id in randomIdList)
+            {
+                var recoverableGrain = client.GetGrain<IRecoverableGrain>(id);
+                await recoverableGrain.Init();
+                var state = await recoverableGrain.ReadState();
+                Console.WriteLine($"State of {recoverableGrain.GetPrimaryKeyLong().ToString()} is: {state.ToString()}");
+            }
+
+            Console.WriteLine("Init phase completed.");
+            Console.WriteLine("Pausing for 5s...");
+            await Task.Delay(5000);
+            Console.WriteLine("Deactivation phase started...");
+            
+            foreach (var id in randomIdList)
+            {
+                var recoverableGrain = client.GetGrain<IRecoverableGrain>(id);
+                await recoverableGrain.DeactivateExplicit();
+            }
+
+            Console.WriteLine("Deactivation phase completed.");
+            Console.WriteLine("Pausing, waiting for keypress...");
+            Console.ReadKey();
+            //await Task.Delay(5000);
+            
+            Console.WriteLine("Recovery phase started...");
+            var streamProvider = client.GetStreamProvider("aqs");
+            var stream = streamProvider.GetStream<RecoverSignal>(RecoverChannelId.Value, nameof(RecoverChannelId));
+            await stream.OnNextAsync(RecoverSignal.Default);
+            
+            Console.WriteLine("Recovery phase completed.");
+            Console.WriteLine("Pausing, waiting for keypress...");
+            Console.ReadKey();
+            Console.WriteLine("Final check phase started...");
+            
+            foreach (var id in randomIdList)
+            {
+                var recoverableGrain = client.GetGrain<IRecoverableGrain>(id);
+                var state = await recoverableGrain.ReadState();
+                Console.WriteLine($"State of {recoverableGrain.GetPrimaryKeyLong().ToString()} is: {state.ToString()}");
+            }
+            
+            Console.WriteLine("Final check phase completed.");
         }
 
         private static async Task LaunchStormtrooperTest(IClusterClient client)
