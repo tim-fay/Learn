@@ -20,6 +20,8 @@ namespace Inheritance.Client
             //await LaunchContractInheritanceTest(client);
             //await LaunchSoloTest(client);
             //await LaunchStormtrooperTest(client);
+            //await LaunchDeathStarTest(client);
+            //await LaunchStarDestroyerTest(client);
 
             await LaunchRecoverableTest(client);
 
@@ -77,6 +79,22 @@ namespace Inheritance.Client
             }
             
             Console.WriteLine("Final check phase completed.");
+        }
+
+        private static async Task LaunchStarDestroyerTest(IClusterClient client)
+        {
+            var destroyer = client.GetGrain<IStarDestroyer>("Compellor");
+            await destroyer.OpenGateway();
+            
+            var barrack = client.GetGrain<IBarrack>("DS-II, North bridge");
+            await barrack.SendStormtroopers("Compellor");
+        }
+
+        private static async Task LaunchDeathStarTest(IClusterClient client)
+        {
+            var deathStar = client.GetGrain<IDeathStar>("DS-II");
+            await deathStar.Build();
+            await deathStar.Explode();
         }
 
         private static async Task LaunchStormtrooperTest(IClusterClient client)

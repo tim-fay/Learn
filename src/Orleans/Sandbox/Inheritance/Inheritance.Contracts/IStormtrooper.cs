@@ -3,11 +3,15 @@ using Orleans;
 
 namespace Inheritance.Contracts
 {
-    public interface IStormtrooper<TWeapon> : IGrainWithStringKey
-        where TWeapon : Weapon, new()
+    public interface IStormtrooper : IGrainWithStringKey
     {
         Task LoadUp();
         Task Fire();
+    }
+
+    public interface IStormtrooper<TWeapon> : IStormtrooper, IGrainWithStringKey
+        where TWeapon : Weapon, new()
+    {
         Task CallForReinforcement<TRequestedWeapon>()
             where TRequestedWeapon : Weapon, new();
     }

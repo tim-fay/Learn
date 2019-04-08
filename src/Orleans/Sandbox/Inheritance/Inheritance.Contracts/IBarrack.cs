@@ -7,5 +7,7 @@ namespace Inheritance.Contracts
     {
         Task<IStormtrooper<TWeapon>> GetStormtrooper<TWeapon>(string callSign)
             where TWeapon : Weapon, new();
+
+        Task SendStormtroopers(string starShipId);
     }
 }
