@@ -24,9 +24,17 @@ namespace Inheritance.Server
             var builder = new SiloHostBuilder()
                 //.AddSimpleMessageStreamProvider(Streams.RadioStreamName)
                 //.AddMemoryGrainStorageAsDefault()
-                .AddAzureTableGrainStorageAsDefault(options => options.ConnectionString = "UseDevelopmentStorage=true")
+                .AddAzureTableGrainStorageAsDefault(options =>
+                {
+                    options.ConnectionString = "UseDevelopmentStorage=true";
+                    options.UseJson = true;
+                })
                 .AddAzureQueueStreams<AzureQueueDataAdapterV2>("aqs", optionsBuilder => optionsBuilder.Configure(options => { options.ConnectionString = "UseDevelopmentStorage=true"; }))
-                .AddAzureTableGrainStorage("PubSubStore", options => options.ConnectionString = "UseDevelopmentStorage=true")
+                .AddAzureTableGrainStorage("PubSubStore", options =>
+                {
+                    options.ConnectionString = "UseDevelopmentStorage=true";
+                    options.UseJson = true;
+                })
                 .UseLocalhostClustering();
 
             var host = builder.Build();

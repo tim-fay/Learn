@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Inheritance.Contracts.Recovery;
 using Orleans;
@@ -12,9 +13,14 @@ namespace Inheritance.Server.Recovery
         {
             await base.OnActivateAsync();
 
-            if (State.SubscriptionHandle != null)
+            var streamProvider = GetStreamProvider("aqs");
+            var stream = streamProvider.GetStream<RecoverSignal>(RecoverChannelId.Value, nameof(RecoverChannelId));
+            var subscriptions = await stream.GetAllSubscriptionHandles();
+            var subscriptionHandle = subscriptions.SingleOrDefault();
+
+            if (subscriptionHandle != null)
             {
-                await State.SubscriptionHandle.ResumeAsync(this);
+                await subscriptionHandle.ResumeAsync(this);
             }
             
         }
@@ -25,7 +31,17 @@ namespace Inheritance.Server.Recovery
 
             var streamProvider = GetStreamProvider("aqs");
             var stream = streamProvider.GetStream<RecoverSignal>(RecoverChannelId.Value, nameof(RecoverChannelId));
-            State.SubscriptionHandle = await stream.SubscribeAsync(this);
+            var subscriptions = await stream.GetAllSubscriptionHandles();
+            var subscriptionHandle = subscriptions.SingleOrDefault();
+
+            if (subscriptionHandle != null)
+            {
+                await subscriptionHandle.ResumeAsync(this);
+            }
+            else
+            {
+                await stream.SubscribeAsync(this);
+            }
 
             await WriteStateAsync();
             Console.WriteLine($"Init completed for {this.GetPrimaryKeyLong().ToString()}");
@@ -44,10 +60,13 @@ namespace Inheritance.Server.Recovery
 
         async Task IAsyncObserver<RecoverSignal>.OnNextAsync(RecoverSignal item, StreamSequenceToken token)
         {
+            var streamProvider = GetStreamProvider("aqs");
+            var stream = streamProvider.GetStream<RecoverSignal>(RecoverChannelId.Value, nameof(RecoverChannelId));
+            var subscriptions = await stream.GetAllSubscriptionHandles();
+            var subscriptionHandle = subscriptions.Single();
+            await subscriptionHandle.UnsubscribeAsync();
+
             State.Data = 0;
-            await WriteStateAsync();
-            await State.SubscriptionHandle.UnsubscribeAsync();
-            State.SubscriptionHandle = null;
             await WriteStateAsync();
         }
 

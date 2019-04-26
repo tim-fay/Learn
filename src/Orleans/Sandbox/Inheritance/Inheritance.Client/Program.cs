@@ -34,16 +34,23 @@ namespace Inheritance.Client
         private static async Task LaunchRecoverableTest(IClusterClient client)
         {
             Console.WriteLine("Init phase started...");
-            const int idCount = 10;
+            const int idCount = 1000;
             List<long> randomIdList = Enumerable.Range(1, idCount).Select(id => (long)id).ToList();
 
+            List<Task> ops = new List<Task>(idCount);
+            
             foreach (var id in randomIdList)
             {
                 var recoverableGrain = client.GetGrain<IRecoverableGrain>(id);
-                await recoverableGrain.Init();
-                var state = await recoverableGrain.ReadState();
-                Console.WriteLine($"State of {recoverableGrain.GetPrimaryKeyLong().ToString()} is: {state.ToString()}");
+                //await recoverableGrain.Init();
+                ops.Add(recoverableGrain.Init());
+                
+                //var state = await recoverableGrain.ReadState();
+                //Console.WriteLine($"State of {recoverableGrain.GetPrimaryKeyLong().ToString()} is: {state.ToString()}");
+                Console.WriteLine($"Init started for {recoverableGrain.GetPrimaryKeyLong().ToString()}");
             }
+
+            await Task.WhenAll(ops);
 
             Console.WriteLine("Init phase completed.");
             Console.WriteLine("Pausing for 5s...");
