@@ -56,6 +56,18 @@ namespace CorpAlgoCourse
             return count;
         }
 
+        private static int CountNumberOfElementsLessThanNumber2(int number, int[] sequence, int index, int count)
+        {
+            //if ()
+            {
+
+            }
+
+            var middleIndex = sequence.Length / 2;
+
+            return count;
+        }
+
         private static void Main1()
         {
             int n = int.Parse(Console.ReadLine());
