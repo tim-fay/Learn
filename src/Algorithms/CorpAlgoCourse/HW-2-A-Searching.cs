@@ -22,6 +22,7 @@ namespace CorpAlgoCourse
             { new[] { 7 }, new[] { 6 }, new[] { 0 } },
             { new[] { 5 }, new[] { 7 }, new[] { 1 } },
             { new[] { 1 }, new[] { 1 }, new[] { 0 } },
+            { new[] { 3, 3, 3, 3, 3, 3, 3, 3, 4 }, new[] { 4, 5 }, new[] { 8, 9 } },
         };
 
         private static int[] Solve(int[] sequence, int[] queries)
@@ -39,7 +40,7 @@ namespace CorpAlgoCourse
                     continue;
                 }
 
-                result[i] = CountNumberOfElementsLessThanNumber(query, sequence);
+                result[i] = CountNumberOfElementsLessThanNumber2(query, sequence);
             }
 
             return result;
@@ -56,16 +57,41 @@ namespace CorpAlgoCourse
             return count;
         }
 
-        private static int CountNumberOfElementsLessThanNumber2(int number, int[] sequence, int index, int count)
+        private static int CountNumberOfElementsLessThanNumber2(int target, int[] sequence)
         {
-            //if ()
+            if (sequence.Length == 0)
             {
+                return 0;
+            }
+            
+            if (sequence.Length == 1)
+            {
+                return sequence[0] < target ? 1 : 0;
+            }
+            
+            int min = 0;
+            int max = sequence.Length;
+            int mid = 0;
 
+            while (min < max)
+            {
+                mid = (min + max) / 2;
+                if (sequence[mid] < target)
+                {
+                    min = mid + 1;
+                }
+                else
+                {
+                    max = mid;
+                }
             }
 
-            var middleIndex = sequence.Length / 2;
-
-            return count;
+            if (sequence[mid] != target)
+            {
+                return mid + 1;
+            }
+            
+            return mid;
         }
 
         private static void Main1()
