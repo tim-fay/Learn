@@ -22,7 +22,9 @@ namespace CorpAlgoCourse
             { new[] { 7 }, new[] { 6 }, new[] { 0 } },
             { new[] { 5 }, new[] { 7 }, new[] { 1 } },
             { new[] { 1 }, new[] { 1 }, new[] { 0 } },
-            { new[] { 3, 3, 3, 3, 3, 3, 3, 3, 4 }, new[] { 4, 5 }, new[] { 8, 9 } },
+            { new[] { 3, 3, 3, 3, 3, 3, 3, 3, 4 }, new[] { 3, 4, 5 }, new[] { 0, 8, 9 } },
+            { new[] { 1000000000, 1000000000 }, new[] { 1000000000 }, new[] { 0 } },
+            { new[] { 1000000000, 999999999 }, new[] { 999999999, 1000000000 }, new[] { 0, 1 } },
         };
 
         private static int[] Solve(int[] sequence, int[] queries)
@@ -39,59 +41,78 @@ namespace CorpAlgoCourse
                     result[i] = 0;
                     continue;
                 }
+                
+                if (sequence.Length == 1)
+                {
+                    result[i] = sequence[0] < query ? 1 : 0;
+                }
 
-                result[i] = CountNumberOfElementsLessThanNumber2(query, sequence);
+                var index = BinarySearchEx(query, sequence);
+                if (index < 0)
+                {
+                    result[i] = ~index;
+                }
+                else
+                {
+                    result[i] = index;
+                }
+
             }
 
             return result;
         }
 
-        private static int CountNumberOfElementsLessThanNumber(int number, int[] sequence)
-        {
-            var count = 0;
-            while (count < sequence.Length && sequence[count] < number)
-            {
-                count++;
-            }
-
-            return count;
-        }
-
-        private static int CountNumberOfElementsLessThanNumber2(int target, int[] sequence)
+        private static int BinarySearchEx(int target, int[] sequence, bool firstOccurence = true)
         {
             if (sequence.Length == 0)
             {
-                return 0;
+                return -1;
             }
-            
-            if (sequence.Length == 1)
+            if (target < sequence[0])
             {
-                return sequence[0] < target ? 1 : 0;
+                return -1;
+            }
+            if (sequence[sequence.Length - 1] < target)
+            {
+                return ~sequence.Length;
             }
             
-            int min = 0;
-            int max = sequence.Length;
+            int low = 0;
+            int high = sequence.Length - 1;
+            int resultIndex = -1;
             int mid = 0;
 
-            while (min < max)
+            while (low <= high)
             {
-                mid = (min + max) / 2;
-                if (sequence[mid] < target)
+                mid = (low + high) / 2;
+                if (sequence[mid] == target)
                 {
-                    min = mid + 1;
+                    resultIndex = mid;
+                    if (firstOccurence)
+                    {
+                        high = mid - 1;
+                    }
+                    else
+                    {
+                        low = mid + 1;
+                    }
+                }
+                else if (target < sequence[mid])
+                {
+                    high = mid - 1;
                 }
                 else
                 {
-                    max = mid;
+                    low = mid + 1;
                 }
             }
 
-            if (sequence[mid] != target)
+            if (resultIndex == -1)
             {
-                return mid + 1;
+                return ~mid;
             }
             
-            return mid;
+            return resultIndex;
         }
 
         private static void Main1()
@@ -106,6 +127,7 @@ namespace CorpAlgoCourse
 
             var output = string.Join(" ", result.Select(val => val.ToString()));
             Console.WriteLine(output);
+            Console.Out.WriteLine();
         }
     }
 }
