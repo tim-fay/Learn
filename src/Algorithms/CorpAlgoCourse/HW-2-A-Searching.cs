@@ -27,6 +27,7 @@ namespace CorpAlgoCourse
             { new[] { 1000000000, 1000000000 }, new[] { 1000000000 }, new[] { 0 } },
             { new[] { 1000000000, 999999999 }, new[] { 999999999, 1000000000 }, new[] { 0, 1 } },
             { new[] { 1, 1, 1000000000, 999999999 }, new[] { 1, 999999999, 1000000000 }, new[] { 0, 2, 3 } },
+            { new[] { 2, 3, 5, 6, 7, 8 }, new[] { 1, 4, 8 }, new[] { 0, 2, 5 } },
         };
 
         private static int[] Solve(int[] sequence, int[] queries)
@@ -82,11 +83,10 @@ namespace CorpAlgoCourse
             int low = 0;
             int high = sequence.Length - 1;
             int resultIndex = -1;
-            int mid = 0;
 
             while (low <= high)
             {
-                mid = (low + high) / 2;
+                var mid = low + (high - low >> 1);
                 if (sequence[mid] == target)
                 {
                     resultIndex = mid;
@@ -111,7 +111,7 @@ namespace CorpAlgoCourse
 
             if (resultIndex == -1)
             {
-                return ~mid;
+                return ~low;
             }
             
             return resultIndex;
