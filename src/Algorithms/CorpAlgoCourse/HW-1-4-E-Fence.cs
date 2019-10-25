@@ -19,10 +19,19 @@ namespace CorpAlgoCourse
         public static IEnumerable<object[]> InputData1 => new TheoryData<int[], int, int>
         {
             { new[] { 1, 2, 6, 1, 1, 7, 1 }, 3, 3 },
+            { new[] { 3, 1, 4, 1, 4, 6, 2, 1, 4, 6 }, 2, 7 },
+            { new[] { 1, 2, 6, 1, 1, 7, 1 }, 3, 3 },
+            { new[] { 1, 1, 1 }, 3, 1 },
+            { new[] { 20, 1 }, 1, 2 },
         };
 
         private static int Solve(int[] fences, int piano)
         {
+            if (fences.Length == piano)
+            {
+                return 1;
+            }
+
             int currentFences = 0;
             int minimumFences = 0;
 
@@ -34,14 +43,9 @@ namespace CorpAlgoCourse
             minimumFences = currentFences;
             int minimumIndex = 0;
 
-            if (fences.Length == piano)
+            for (int i = 1; i < fences.Length - piano + 1; i++)
             {
-                return minimumIndex;
-            }
-
-            for (int i = piano; i < fences.Length; i++)
-            {
-                currentFences = currentFences - fences[i - piano] + fences[i];
+                currentFences = currentFences - fences[i - 1] + fences[i + piano - 1];
                 if (currentFences < minimumFences)
                 {
                     minimumFences = currentFences;
@@ -49,7 +53,7 @@ namespace CorpAlgoCourse
                 }
             }
             
-            return minimumIndex;
+            return minimumIndex + 1;
         }
 
         private static void Main1()
