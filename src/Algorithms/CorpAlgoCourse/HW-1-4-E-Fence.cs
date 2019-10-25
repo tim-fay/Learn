@@ -23,7 +23,33 @@ namespace CorpAlgoCourse
 
         private static int Solve(int[] fences, int piano)
         {
-            return 0;
+            int currentFences = 0;
+            int minimumFences = 0;
+
+            for (int i = 0; i < piano; i++)
+            {
+                currentFences += fences[i];
+            }
+
+            minimumFences = currentFences;
+            int minimumIndex = 0;
+
+            if (fences.Length == piano)
+            {
+                return minimumIndex;
+            }
+
+            for (int i = piano; i < fences.Length; i++)
+            {
+                currentFences = currentFences - fences[i - piano] + fences[i];
+                if (currentFences < minimumFences)
+                {
+                    minimumFences = currentFences;
+                    minimumIndex = i;
+                }
+            }
+            
+            return minimumIndex;
         }
 
         private static void Main1()
