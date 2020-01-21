@@ -55,13 +55,10 @@ namespace CorpAlgoCourse
         private static void Main1()
         {
             int n = int.Parse(Console.ReadLine());
-            
             var queues = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
-            //var sequence = new int[n];
             var result = Solve(n, queues);
 
             Console.WriteLine(result);
         }
-        
     }
 }
