@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CorpAlgoCourse
+namespace CorpAlgoCourse.Sheldon
 {
     public class WorldCup
     {
@@ -55,7 +55,7 @@ namespace CorpAlgoCourse
         private static void Main1()
         {
             int n = int.Parse(Console.ReadLine());
-            var queues = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
+            var queues = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse((string) str)).ToArray();
             var result = Solve(n, queues);
 
             Console.WriteLine(result);

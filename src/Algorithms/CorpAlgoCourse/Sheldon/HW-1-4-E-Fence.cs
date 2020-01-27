@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CorpAlgoCourse
+namespace CorpAlgoCourse.Sheldon
 {
     [Trait("Category", "Corporate Algorithmic Course")]
     public class Fence

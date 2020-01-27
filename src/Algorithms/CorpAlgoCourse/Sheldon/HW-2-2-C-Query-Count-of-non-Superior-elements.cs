@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CorpAlgoCourse
+namespace CorpAlgoCourse.Sheldon
 {
     [Trait("Category", "Corporate Algorithmic Course")]
     public class QueryCountOfNonSuperiorElements
@@ -109,7 +109,7 @@ namespace CorpAlgoCourse
             var nM = Console.ReadLine(); // Do nothing with n & m
             //int n = int.Parse(Console.ReadLine());
             //var sequence = new int[n];
-            var sequence = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
+            var sequence = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse((string) str)).ToArray();
             var queries = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
 
             var result = Solve(sequence, queries);

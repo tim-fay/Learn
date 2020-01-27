@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace CorpAlgoCourse
+namespace CorpAlgoCourse.Sheldon
 {
     [Trait("Category", "Corporate Algorithmic Course")]
     public class Searching
@@ -121,7 +121,7 @@ namespace CorpAlgoCourse
         {
             int n = int.Parse(Console.ReadLine());
             //var sequence = new int[n];
-            var sequence = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
+            var sequence = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse((string) str)).ToArray();
             int m = int.Parse(Console.ReadLine());
             var queries = Console.ReadLine().Split(new[] {' '}).Select(str => int.Parse(str)).ToArray();
 
