@@ -34,13 +34,14 @@ namespace CorpAlgoCourse.Spock
             { 5, new[] { 2, 3 }, 2f },
             { 5, new[] { 1, 4 }, 1.5f },
             { 15, new[] { 15, 5, 3, 7, 9, 14, 0 }, 2.5f },
+            { 615683844, new[] { 431749087, 271781274, 274974690, 324606253, 480870261, 401650581, 13285442, 478090364, 266585394, 425024433, 588791449, 492057200, 391293435, 563090494, 317950, 173675329, 473068378, 356306865, 311731938, 192959832, 321180686, 141984626, 578985584, 512026637, 175885185, 590844074, 47103801, 212211134, 330150, 509886963, 565955809, 315640375, 612907074, 500474373, 524310737, 568681652, 315339618, 478782781, 518873818, 271322031, 74600969, 539099112, 85129347, 222068995, 106014720, 77282307 }, 22258199.5000000000f}
         };
         
         
         /// <summary>
         /// Solving the algorithm by sorting lantern positions and calculating maximum distance between 2 adjacent lanterns. 
         /// </summary>
-        private static float CalculateMinimumLightEmittingRadius(int streetLength, int[] lanternPositions)
+        private static double CalculateMinimumLightEmittingRadius(int streetLength, int[] lanternPositions)
         {
             Array.Sort(lanternPositions);
             
@@ -56,10 +57,10 @@ namespace CorpAlgoCourse.Spock
                 }
             }
             
-            var maxRadiusForEdgeLanterns = (float)Math.Max(lanternPositions[0], streetLength - lanternPositions[lanternPositions.Length - 1]);
-            var maxRadiusBetweenLanterns = (float)maximumDistanceBetweenAdjacentLanterns / 2;
+            var maxRadiusForEdgeLanterns = (double)Math.Max(lanternPositions[0], streetLength - lanternPositions[lanternPositions.Length - 1]);
+            var maxRadiusBetweenLanterns = (double)maximumDistanceBetweenAdjacentLanterns / 2;
 
-            float minimumRadius = Math.Max(maxRadiusBetweenLanterns, maxRadiusForEdgeLanterns);
+            var minimumRadius = Math.Max(maxRadiusBetweenLanterns, maxRadiusForEdgeLanterns);
             return minimumRadius;
         }
 
