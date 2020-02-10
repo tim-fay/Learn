@@ -13,14 +13,14 @@ namespace CorpAlgoCourse.Spock
     public class VanyaAndLanterns
     {
         [Theory]
-        [MemberData(nameof(InputData1))]
-        public void Test1(int streetLength, int[] lanternPositions, double expectedMinimumRadius)
+        [MemberData(nameof(InputData))]
+        public void Test(int streetLength, int[] lanternPositions, double expectedMinimumRadius)
         {
             var radius = CalculateMinimumLightEmittingRadius(streetLength, lanternPositions);
             Assert.Equal(expectedMinimumRadius, radius);
         }
 
-        public static IEnumerable<object[]> InputData1 => new TheoryData<int, int[], double>
+        public static IEnumerable<object[]> InputData => new TheoryData<int, int[], double>
         {
             { 10, new[] { 5 }, 5f },
             { 10, new[] { 4, 4, 2, 2, 6, 6, 6 }, 4f },
