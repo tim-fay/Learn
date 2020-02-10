@@ -6,7 +6,7 @@ using Xunit;
 namespace CorpAlgoCourse.Spock
 {
     /// <summary>
-    /// Codeforces: Vanya and Lanterns
+    /// Codeforces: Eugeny and Play List
     /// http://codeforces.com/gym/268160/problem/D
     /// </summary>
     [Trait("Category", "Spock: Corporate Algorithmic Course: HW 1.1")]
