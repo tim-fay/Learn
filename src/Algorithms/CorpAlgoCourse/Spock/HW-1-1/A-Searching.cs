@@ -90,7 +90,7 @@ namespace CorpAlgoCourse.Spock
 
             while (low <= high)
             {
-                var mid = low + (high - low >> 1);
+                var mid = low + ((high - low) >> 1);
                 if (sequence[mid] == target)
                 {
                     resultIndex = mid;
