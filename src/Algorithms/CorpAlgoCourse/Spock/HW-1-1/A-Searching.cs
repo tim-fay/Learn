@@ -9,7 +9,7 @@ namespace CorpAlgoCourse.Spock
     /// Codeforces: Searching
     /// http://codeforces.com/gym/268160/problem/A
     /// </summary>
-    [Trait("Category", "Corporate Algorithmic Course")]
+    [Trait("Category", "Spock: Corporate Algorithmic Course: HW 1.1")]
     public class Searching
     {
         [Theory]
